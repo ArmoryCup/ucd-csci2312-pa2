@@ -1,5 +1,10 @@
 #include "Cluster.h"
 
+namespace Clustering {
+
+
+    Cluster::Cluster(int size, NodePtr link);
+
 //Cluster::Cluster(const Cluster &rhs) : size(rhs.size) {
 //}
 /*
@@ -28,10 +33,10 @@ Cluster &operator=(const Cluster &rhs) {
 }*/
 
 // dtor
-Clustering::Cluster::~Cluster() {
-}
+    Cluster::~Cluster() {
+    }
 
+    void Cluster::add(Clustering::PointPtr const &ptr) {
 
-Clustering::Cluster::Cluster(int i, Clustering::NodePtr link) {
-
+    }
 }

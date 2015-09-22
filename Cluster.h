@@ -18,8 +18,9 @@ namespace Clustering {
     class Cluster {
 
     public:
-        Cluster() : m_size(0), m_points(nullptr) { } // default ctor
-        Cluster(int, NodePtr link);
+        Cluster() : m_size(0), m_link(nullptr) { } // default ctor
+        Cluster(int size, NodePtr link);
+
         Cluster(const Cluster &); // copy ctor
 
 
@@ -30,7 +31,7 @@ namespace Clustering {
         PointPtr &remove(const PointPtr &); // remove a point and return it so we can add it to another cluster
 
     private:
-        NodePtr m_points; // array of pointers to Point
+        NodePtr m_link; // array of pointers to Point
         size_t m_size;
     };
 }
