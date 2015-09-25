@@ -8,6 +8,9 @@ namespace Clustering {
 
     class Point {
 
+        int m_Dim;              // to hold dimension of a pointer
+        double *values;   // to hold dimensions of array of double
+
     public:
         // Constructors
         Point();                                       // default constructor. It is two dimension pointer by default
@@ -17,17 +20,17 @@ namespace Clustering {
 
         Point(const Point &);                           // copy constructor
 
-        double *getM_arrDoubles() const {
-            return m_arrDoubles;
+        double *getvalues() const {
+            return values;
         }
 
-        void setM_Dim(int dim) {
+        void setM_Dim(int dim) {                        // set dimention for the Points
             Point::m_Dim = dim;
         }
 
-        // set value to the element of the array
-        void setElement(int index, double value) {
-            Point::m_arrDoubles[index] = value;
+
+        void setValue(int index, double value) {      // set value to the element of the array
+            Point::values[index] = value;         // assign the selected element of the array to new value
         }
 
         // Destructor
@@ -72,17 +75,12 @@ namespace Clustering {
 
         Point &operator/=(const Point &);
 
+
         int getM_Dim() const { return m_Dim; }
 
+        // this function return a double that approximates the distance between points.
         double distanceTo(Point &point);
 
-        double distanceTo(int dim);
-
-
-    private:
-
-        int m_Dim;              // to hold dimension of a pointer
-        double *m_arrDoubles;   // to hold dimensions of array of double
     };
 }
 #endif // CLUSTERING_POINT_H

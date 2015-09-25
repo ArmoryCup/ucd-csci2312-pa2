@@ -11,28 +11,28 @@ namespace Clustering {
     typedef struct Node *NodePtr;
 
     struct Node {
-        PointPtr pointer;
+        PointPtr p;
         Node *next;
     };
 
     class Cluster {
 
     public:
-        Cluster() : m_size(0), m_link(nullptr) { } // default ctor
-        Cluster(int size, NodePtr link);
+        Cluster() : m_size(0), points(nullptr) { } // default ctor
 
         Cluster(const Cluster &); // copy ctor
-
 
         Cluster &operator=(const Cluster &); // assignment operator
         ~Cluster(); // dtor
 
-        void add(const PointPtr &); // add a point
+        void add(const PointPtr ); // add a point
         PointPtr &remove(const PointPtr &); // remove a point and return it so we can add it to another cluster
 
+        friend std::ostream &operator<<(std::ostream &os, const Clustering::Cluster &c1);
+
     private:
-        NodePtr m_link; // array of pointers to Point
-        size_t m_size;
+        NodePtr points; // node pointer to points to the points of the linked list
+        int m_size;
     };
 }
 #endif //PA2_CLUSTER_H
