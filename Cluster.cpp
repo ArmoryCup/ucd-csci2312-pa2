@@ -7,55 +7,54 @@ namespace Clustering {
 
     Cluster::Cluster(const Cluster &rhs) {
         m_size = rhs.m_size;
-        points = nullptr;
-        NodePtr curr = nullptr;
-        NodePtr newCurr = rhs.points;
+        points = NULL;
+        LNodePtr curr = NULL;
+        LNodePtr newCurr = rhs.points;
         while (newCurr != NULL) {
-            NodePtr newNode = new Node;
-            
+            LNodePtr newNode = new LNode;
+
             // get dimenstion of the copy Cluster's points
             // copy all values from Point and store them in arr
-            int dim = rhs.m_size;
+
+            int dim = rhs.points->p->getM_Dim();
             double arr[dim];
             for (int i = 0; i < dim; ++i) {
                 arr[i] = newCurr->p->getvalues()[i];
             }
-            PointPtr temp = new Point(dim,arr);
+            PointPtr temp = new Point(dim, arr);
             newNode->p = temp;
             newNode->next = NULL;
 
-            if (this->points == NULL) {
+            if (!this->points) {
                 points = newNode;
-                cout << "\nCopy Added: " << *points->p << endl;
-
+                newCurr = newCurr->next;
             }
             else {
                 curr = points;
+                while (curr->next) {
+                    curr = curr->next;
+                }
                 curr->next = newNode;
-                curr = curr->next;
-                cout << "Copy Added: " << *curr->p << endl;
+                newCurr = newCurr->next;
             }
-            newCurr = newCurr->next;
-
         }
     }
 
-    Cluster &Cluster::operator=(const Cluster &cluster) {
-        if (this == &cluster)
-            return *this;
-        else {
-            m_size = cluster.m_size;
-            cout << "AAAAA" << *points->p << endl;
-        }
-        return *this;
-    }
+    void Cluster::add(const PointPtr &ptr) {
+        LNodePtr newNode;                // to point to the new node
+        LNodePtr curr = nullptr;         // to move thorugh the lsit
 
-    void Cluster::add(const PointPtr ptr) {
-        NodePtr newNode = new Node;
-        NodePtr curr;
-        newNode->p = ptr;
-        newNode->next = NULL;
-        if (points == NULL) {
+        // Allocate a new node and store ptr there.
+        newNode = new LNode;
+        int dim = ptr->getM_Dim();
+        double arr[dim];
+        for (int i = 0; i < dim; ++i) {
+            arr[i] = ptr->getvalues()[i];
+        }
+
+        newNode->p = new Point(dim, arr);
+        newNode->next = nullptr;
+        if (!points) {
             points = newNode;
         } else {
             curr = points;
@@ -63,32 +62,140 @@ namespace Clustering {
                 curr = curr->next;
             }
             curr->next = newNode;
+//            curr = curr->next;
         }
         m_size++;
     }
 
-// dtor
-    Cluster::~Cluster() {
-//        if (points == nullptr) {
-//            delete points;
-//        } else {
-////            for (int i = 0; i < m_size; ++i) {
-////                cout <<"Dereference\n";
-////            }
-//        }
-//        delete points;
 
+    Cluster &Cluster::operator=(const Cluster &rhs) {
+        if (this == &rhs)
+            return *this;
+        else {
+            points = NULL;
+            LNodePtr curr = NULL;
+            LNodePtr newCurr = rhs.points;
+            while (newCurr != NULL) {
+                LNodePtr newNode = new LNode;
 
-    }
+                // get dimenstion of the copy Cluster's points
+                // copy all values from Point and store them in arr
+                int dim = rhs.points->p->getM_Dim();
+                double arr[dim];
+                for (int i = 0; i < dim; ++i) {
+                    arr[i] = newCurr->p->getvalues()[i];
+                }
+                PointPtr temp = new Point(dim, arr);
+                newNode->p = temp;
+                newNode->next = NULL;
 
-    std::ostream &operator<<(std::ostream &os, const Cluster &c1) {
-        NodePtr n = c1.points;
-
-        // while node points to a node, travel to the list
-        while (n) {
-            os << *(n->p) << std::endl;
-            n = n->next;
+                if (!this->points) {
+                    points = newNode;
+                    newCurr = newCurr->next;
+                }
+                else {
+                    curr = points;
+                    while (curr->next) {
+                        curr = curr->next;
+                    }
+                    curr->next = newNode;
+                    newCurr = newCurr->next;
+                }
+            }
+            return *this;
         }
     }
 
+
+    // dtor
+    Cluster::~Cluster() {
+        while (points != NULL) {
+            LNodePtr delNode = points;
+            points = points->next;
+            delete delNode->p;
+            delete delNode;
+        }
+    }
+
+    std::ostream &operator<<(std::ostream &os, const Cluster &c1) {
+        LNodePtr n = c1.points;
+        // while node points to a node, travel to the list
+        os << *(n->p) << endl;
+        while (n->next) {
+            n = n->next;
+            os << *(n->p) << endl;
+        }
+    }
+
+
+    PointPtr &Cluster::remove(const PointPtr &ptr) {
+//        NodePtr delPtr = points;
+//        NodePtr curr = points;
+
+
+    }
+
+    const Cluster operator+(const Cluster &lhs, const Cluster &rhs) {
+        Cluster temp;
+        temp.m_size = lhs.m_size + rhs.m_size;
+        LNodePtr currLeft = lhs.points;
+        LNodePtr currRight = rhs.points;
+        LNodePtr currTemp = NULL;
+
+
+        while (currLeft) {
+            LNodePtr newNode = new LNode;
+            newNode->p = currLeft->p;
+            newNode->next = NULL;
+
+            if (temp.points == NULL) {
+                
+                temp.points = newNode;
+                currLeft = currLeft->next;
+            } else {
+                currTemp = temp.points;
+                while (currTemp->next) {
+                    currTemp = currTemp->next;
+                }
+                currTemp->next = newNode;
+                currLeft = currLeft->next;
+            }
+        }
+
+        while (currRight) {
+            LNodePtr newNode = new LNode;
+            newNode->p = currRight->p;
+            newNode->next = NULL;
+
+            currTemp = temp.points;
+            while (currTemp->next) {
+                currTemp = currTemp->next;
+            }
+            currTemp->next = newNode;
+            currRight = currRight->next;
+        }
+        return temp;
+    }
+
+    bool operator==(const Cluster &lhs, const Cluster &rhs) {
+        int size = lhs.points->p->getM_Dim();
+        LNodePtr lCurr = lhs.points;
+        LNodePtr rCurr = rhs.points;
+
+        PointPtr left, right;
+
+        while (lCurr) {
+            left = lCurr->p;
+            right = rCurr->p;
+            for (int i = 0; i < size; ++i) {
+                if (left->getvalues()[i] == right->getvalues()[i]) {
+                    return true;
+                }
+                else
+                    return false;
+            }
+            lCurr = lCurr->next;
+            rCurr = rCurr->next;
+        }
+    }
 }

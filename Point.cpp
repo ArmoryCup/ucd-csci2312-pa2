@@ -51,7 +51,7 @@ namespace Clustering {
         for (int i = 0; i < m_Dim; ++i) {
             d += pow((point.values[i] - values[i]), 2);
         }
-            distance = sqrt(d);
+        distance = sqrt(d);
         return distance;
     }
 
@@ -69,9 +69,8 @@ namespace Clustering {
         if (this == &rightSide)
             return *this;
         else {
-
             delete[] values;
-            m_Dim = rightSide.getM_Dim();
+            m_Dim = rightSide.m_Dim;
             values = new double[m_Dim];
             for (int i = 0; i < m_Dim; ++i) {
                 values[i] = rightSide.values[i];
@@ -82,10 +81,12 @@ namespace Clustering {
 
     bool operator==(Point &p1, Point &p2) {
 
-        for (int i = 0; i < p1.getM_Dim(); ++i) {
-            if (p1.values[i] == p2.getvalues()[i])
+        for (int i = 0; i < p1.m_Dim; ++i) {
+            if (p1.values[i] == p2.values[i])
                 return true;
+            else return false;
         }
+
     }
 
     bool operator!=(Point &p1, Point &p2) {
@@ -94,20 +95,20 @@ namespace Clustering {
 
     bool operator<(Point &p1, Point &p2) {
 
-        for (int i = 0; i < p1.getM_Dim(); ++i) {
-            if (p1.values[i] < p2.getvalues()[i])
+        for (int i = 0; i < p1.m_Dim; ++i) {
+            if (p1.values[i] < p2.values[i])
                 return true;
-            else if (p2.getvalues()[i] > p1.values[i])
+            else if (p2.values[i] < p1.values[i])
                 return false;
             else return false;
         }
     }
 
     bool operator>(Point &p1, Point &p2) {
-        for (int i = 0; i < p1.getM_Dim(); ++i) {
-            if (p1.values[i] > p2.getvalues()[i])
+        for (int i = 0; i < p1.m_Dim; ++i) {
+            if (p1.values[i] > p2.values[i])
                 return true;
-            else if (p2.getvalues()[i] > p1.values[i])
+            else if (p2.values[i] > p1.values[i])
                 return false;
             else return false;
         }
@@ -115,17 +116,17 @@ namespace Clustering {
 
     bool operator<=(Point &p1, Point &p2) {
         for (int i = 0; i < p1.getM_Dim(); ++i) {
-            if (p1.values[i] <= p2.getvalues()[i])
+            if (p1.values[i] <= p2.values[i])
                 return true;
-            else if (p2.getvalues()[i] > p1.values[i])
+            else if (p2.values[i] > p1.values[i])
                 return false;
             else return false;
         }
     }
 
     bool operator>=(Point &p1, Point &p2) {
-        for (int i = 0; i < p1.getM_Dim(); ++i) {
-            if (p1.values[i] >= p2.getvalues()[i])
+        for (int i = 0; i < p1.m_Dim; ++i) {
+            if (p1.values[i] >= p2.values[i])
                 return true;
             else
                 return false;
@@ -136,9 +137,8 @@ namespace Clustering {
         Point temp(operand1);
 
         for (int i = 0; i < temp.m_Dim; ++i) {
-            temp.values[i] = operand1.getvalues()[i] + operand2.getvalues()[i];
+            temp.values[i] = operand1.values[i] + operand2.values[i];
         }
-
         return temp;
     }
 
@@ -146,7 +146,7 @@ namespace Clustering {
         Point temp(operand1);
 
         for (int i = 0; i < temp.m_Dim; ++i) {
-            temp.values[i] = operand1.getvalues()[i] - operand2.getvalues()[i];
+            temp.values[i] = operand1.values[i] - operand2.values[i];
         }
         return temp;
     }
