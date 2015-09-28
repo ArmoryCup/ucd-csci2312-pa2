@@ -39,8 +39,10 @@ namespace Clustering {
 // Destructor
 // No dynamic allocation, so nothing to do; if omitted, generated automatically
     Point::~Point() {
-        delete[] values;
-        values = NULL;
+        if(values!= nullptr) {
+            delete[] values;
+            values = NULL;
+        }
     }
 
 // this function return a double that approximates the distance between the two points.
