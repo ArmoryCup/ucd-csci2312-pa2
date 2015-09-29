@@ -42,30 +42,30 @@ namespace Clustering {
         if (this == &rhs)
             return *this;
         else {
-        points = NULL;
-        LNodePtr curr = NULL;
-        LNodePtr newCurr = rhs.points;
-        while (newCurr != NULL) {
-            LNodePtr newNode = new LNode;
-            newNode->p = newCurr->p;
-            newNode->next = NULL;
+            points = NULL;
+            LNodePtr curr = NULL;
+            LNodePtr newCurr = rhs.points;
+            while (newCurr != NULL) {
+                LNodePtr newNode = new LNode;
+                newNode->p = newCurr->p;
+                newNode->next = NULL;
 
-            if (!points) {
-                points = newNode;
-                newCurr = newCurr->next;
-            }
-            else {
-                curr = points;
-                while (curr->next) {
-                    curr = curr->next;
+                if (!points) {
+                    points = newNode;
+                    newCurr = newCurr->next;
                 }
-                curr->next = newNode;
-                newCurr = newCurr->next;
+                else {
+                    curr = points;
+                    while (curr->next) {
+                        curr = curr->next;
+                    }
+                    curr->next = newNode;
+                    newCurr = newCurr->next;
+                }
             }
+            return *this;
         }
-        return *this;
     }
-}
 
 
     // dtor
@@ -80,46 +80,50 @@ namespace Clustering {
     }
 
     PointPtr &Cluster::remove(const PointPtr &ptr) {
-        PointPtr delPtr = points->p;
+        PointPtr delPtr = NULL;
         LNodePtr curr = points;
 
-        while(curr){
-            if(curr->p==ptr){
+        while (curr) {
+            if (curr->p == ptr) {
                 delPtr = ptr;
-                delete ptr;
-                curr->next = curr->next;
-                return delPtr;
-            }else {
+                points->next = curr->next;
+                delete curr;
+//                return delPtr;
+            } else {
                 // Move to the next node
                 curr = curr->next;
             }
+            return delPtr;
         }
+
         cout << "The pointer is not in the Cluster!\n";
     }
 
     const Cluster operator+(const Cluster &lhs, const Cluster &rhs) {
-        Cluster temp;
+        Cluster newCluster;
 //        temp.m_size = lhs.m_size ;
         LNodePtr currLeft = lhs.points;
         LNodePtr currRight = rhs.points;
-        LNodePtr currTemp = nullptr;
         PointPtr pRemove;
 
         while (currLeft) {
-            if(currLeft->p != currRight->p){
-                pRemove= currRight->p;
-                //temp.add(rhs.remove(pRemove));
-                temp.add(pRemove);
-                currRight = currRight->next;
-            }
-            else
+
+            newCluster.add(currLeft->p);
             currLeft = currLeft->next;
         }
+        currLeft = lhs.points;
+        while(currRight->p!= currLeft->p){
+            currRight = currRight->next;
+        }
 //        while (currRight) {
-//            temp.add(currRight->p);
-//            currRight = currRight->next;
+//            if (currRight->p != currLeft->p) {
+//                newCluster.add(currRight->p);
+//                currRight = currRight->next;
+//            }
+//            else
+//                currRight = currRight->next;
 //        }
-        return temp;
+        return newCluster;
     }
 
     bool operator==(const Cluster &lhs, const Cluster &rhs) {
