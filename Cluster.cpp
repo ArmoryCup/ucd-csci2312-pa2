@@ -80,7 +80,7 @@ namespace Clustering {
     }
 
     PointPtr &Cluster::remove(const PointPtr &ptr) {
-        PointPtr delPtr = NULL;
+        PointPtr delPtr = nullptr;
         LNodePtr curr = points;
 
         while (curr) {
@@ -88,7 +88,6 @@ namespace Clustering {
                 delPtr = ptr;
                 points->next = curr->next;
                 delete curr;
-//                return delPtr;
             } else {
                 // Move to the next node
                 curr = curr->next;
@@ -102,19 +101,35 @@ namespace Clustering {
     const Cluster operator+(const Cluster &lhs, const Cluster &rhs) {
         Cluster newCluster;
 //        temp.m_size = lhs.m_size ;
-        LNodePtr currLeft = lhs.points;
-        LNodePtr currRight = rhs.points;
-        PointPtr pRemove;
+//        LNodePtr currLeft = lhs.points;
+//        LNodePtr currRight = rhs.points;
+//        PointPtr pRemove;
 
-        while (currLeft) {
+        for (LNodePtr curr = lhs.points; curr != nullptr; curr = curr->next) {
 
-            newCluster.add(currLeft->p);
-            currLeft = currLeft->next;
+            for (LNodePtr curr2 = rhs.points; curr2 != nullptr; curr2 = curr2->next) {
+                if (curr->p != curr2->p) {
+                    newCluster.add(curr2->p);
+                }
+            }
+
+
         }
-        currLeft = lhs.points;
-        while(currRight->p!= currLeft->p){
-            currRight = currRight->next;
-        }
+//        while (currLeft) {
+//
+//            newCluster.add(currLeft->p);
+//            currLeft = currLeft->next;
+//        }
+//        currLeft = lhs.points;
+//        while(currRight->p== currLeft->p){
+//            currRight = currRight->next;
+//        }
+//        for (LNodePtr curr = currRight; curr != nullptr; curr = curr->next) {
+//            if (currLeft->p != curr->p) {
+//                newCluster.add(curr->p);
+//
+//            }
+//        }
 //        while (currRight) {
 //            if (currRight->p != currLeft->p) {
 //                newCluster.add(currRight->p);
@@ -159,5 +174,36 @@ namespace Clustering {
         }
     }
 
+    Cluster &Cluster::operator+=(const Point &rhs) {
 
+        LNodePtr newNode;                // to point to the new node
+        LNodePtr curr = nullptr;         // to move thorugh the lsit
+
+        PointPtr newPoint = new Point(rhs);
+        add(newPoint);
+        return *this;
+    }
+
+    Cluster &Cluster::operator-=(const Point &rhs) {
+        LNodePtr curr = points;
+        while (curr) {
+            if (curr->p== &rhs) {
+                points->next = curr->next;
+                delete curr->p;
+                delete curr;
+            } else {
+                curr = curr->next;
+            }
+        }
+        return *this;
+    }
+
+    Cluster &Cluster::operator+=(const Cluster &rhs) {
+
+        return *this;
+    }
+
+    Cluster &Cluster::operator-=(const Cluster &rhs) {
+        return *this;
+    }
 }

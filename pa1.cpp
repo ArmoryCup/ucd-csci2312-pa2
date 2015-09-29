@@ -36,6 +36,11 @@ int main(void) {
     c2.add(p4);
     c2.add(p5);
     c2.add(p6);
+    Point p(dim,arr);
+    c2+= p;
+    cout << c2;
+    c2-= p;
+    cout << endl<< c2;
 //    c2.add(c1.remove(p1));
 //    cout << "c2\n" << c2;
 //
@@ -46,15 +51,6 @@ int main(void) {
     c22 = c1 + c2;                      // Error when assigning c22
     cout << "c22\n" << c22;*/
 
-//    Cluster c3= c1+c2;
-//    cout << c3;
-//    cout <<"\nC3";
-//    Cluster c3(c2);
-//    cout <<c3;
-//
-//    cout <<"\nC4";
-//    Cluster c4;
-//    c4 = c1;
     return 0;
 
 }

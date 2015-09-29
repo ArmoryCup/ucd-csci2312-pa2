@@ -31,6 +31,12 @@ namespace Clustering {
         void add(const PointPtr &); // add a point
         PointPtr &remove(const PointPtr &); // remove a point and return it so we can add it to another cluster
 
+        Cluster &operator+=(const Cluster &rhs); // union
+        Cluster &operator-=(const Cluster &rhs); // (asymmetric) difference
+
+        Cluster &operator+=(const Point &rhs); // add point
+        Cluster &operator-=(const Point &rhs); // remove point
+
         friend bool operator==(const Cluster &lhs, const Cluster &rhs);
 
         friend std::ostream &operator<<(std::ostream &os, const Clustering::Cluster &c1);
