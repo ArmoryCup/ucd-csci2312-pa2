@@ -15,33 +15,39 @@ int main(void) {
     double arr3[dim] = {3, 3};
     double arr4[dim] = {4, 4};
     double arr5[dim] = {5, 5};
-    double arr6[dim] = {6, 6};
+    double arr6[dim] = {6, 6}, arr7[dim] = {7,7};
     PointPtr p1 = new Point(dim, arr);
     PointPtr p2 = new Point(dim, arr2);
     PointPtr p3 = new Point(dim, arr3);
     PointPtr p4 = new Point(dim, arr4);
     PointPtr p5 = new Point(dim, arr5);
-    PointPtr p6 = new Point(dim, arr6);
+    PointPtr p6 = new Point(dim, arr6), p7 = new Point(dim, arr7);;
 
     Cluster c1;
     c1.add(p1);
-    c1.add(p3);
-    c1.add(p4);
+    c1.add(p2);
+    c1.add(p6);
+
+//    PointPtr ptr = c1.remove(p4);
 //    c1.add(p3);
 //    cout << endl << "c1\n" << c1;
 //    c1.add(c1.remove(p4));
 //    cout << endl << "c1\n" << c1;
 
     Cluster c2;
-    c2.add(p4);
+    c2.add(p2);
     c2.add(p5);
-    c2.add(p6);
-    Point p(dim,arr);
-    c2+= p;
-    cout << c2;
-    c2-= p;
-    cout << endl<< c2;
-//    c2.add(c1.remove(p1));
+    c2.add(p1);
+
+    Cluster c3;
+    c3 = c1 + c2;
+
+    cout << "\nC3\n" << c3;
+
+    Point p(dim, arr);
+//    c2+= p;
+//    c2-= p;
+//    cout <<"\nC2 "<< endl<< c2;
 //    cout << "c2\n" << c2;
 //
 //    Cluster c22 = c1 + c2;

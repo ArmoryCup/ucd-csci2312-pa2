@@ -6,9 +6,7 @@ using namespace std;
 namespace Clustering {
 
     Cluster::Cluster(const Cluster &rhs) {
-        m_size = rhs.m_size;
-        points = NULL;
-        LNodePtr curr = NULL;
+        this->points = NULL;
         LNodePtr newCurr = rhs.points;
         while (newCurr) {
             add(newCurr->p);
@@ -42,26 +40,18 @@ namespace Clustering {
         if (this == &rhs)
             return *this;
         else {
-            points = NULL;
-            LNodePtr curr = NULL;
+
+            // delete all existing node
+            while (points != NULL) {
+                LNodePtr delNode = points;
+                points = points->next;
+                delete delNode;
+            }
+
             LNodePtr newCurr = rhs.points;
             while (newCurr != NULL) {
-                LNodePtr newNode = new LNode;
-                newNode->p = newCurr->p;
-                newNode->next = NULL;
-
-                if (!points) {
-                    points = newNode;
-                    newCurr = newCurr->next;
-                }
-                else {
-                    curr = points;
-                    while (curr->next) {
-                        curr = curr->next;
-                    }
-                    curr->next = newNode;
-                    newCurr = newCurr->next;
-                }
+                add(newCurr->p);
+                newCurr = newCurr->next;
             }
             return *this;
         }
@@ -73,71 +63,61 @@ namespace Clustering {
         while (points != NULL) {
             LNodePtr delNode = points;
             points = points->next;
-            if (delNode->p != nullptr)
-                delete delNode->p;
+//            if (delNode->p != nullptr)
+//                delete delNode->p;
             delete delNode;
         }
+//        cout << "Dereferencing\n";
     }
 
     PointPtr &Cluster::remove(const PointPtr &ptr) {
         PointPtr delPtr = nullptr;
+        LNodePtr delNode = nullptr;
         LNodePtr curr = points;
-
         while (curr) {
             if (curr->p == ptr) {
                 delPtr = ptr;
-                points->next = curr->next;
-                delete curr;
+                delNode = curr;
+                points = curr->next;
+                delete delNode;
             } else {
                 // Move to the next node
                 curr = curr->next;
             }
-            return delPtr;
         }
-
+        return delPtr;
         cout << "The pointer is not in the Cluster!\n";
     }
 
     const Cluster operator+(const Cluster &lhs, const Cluster &rhs) {
         Cluster newCluster;
-//        temp.m_size = lhs.m_size ;
-//        LNodePtr currLeft = lhs.points;
-//        LNodePtr currRight = rhs.points;
-//        PointPtr pRemove;
+        LNodePtr curr1, curr2, dup;
 
-        for (LNodePtr curr = lhs.points; curr != nullptr; curr = curr->next) {
+        curr1 = lhs.points, curr2 = rhs.points;
+        while (curr1) {
+            newCluster.add(curr1->p);
+            curr1 = curr1->next;
+        }
+        while (curr2) {
+            newCluster.add(curr2->p);
+            curr2 = curr2->next;
+        }
 
-            for (LNodePtr curr2 = rhs.points; curr2 != nullptr; curr2 = curr2->next) {
-                if (curr->p != curr2->p) {
-                    newCluster.add(curr2->p);
+        LNodePtr ptr1 = newCluster.points,
+                ptr2;
+        while (ptr1 != NULL ) {
+            ptr2 = ptr1;
+            while (ptr2->next != NULL) {
+                if (ptr1->p == ptr2->next->p) {
+                    dup = ptr2->next;
+                    ptr2->next = ptr2->next->next;
+                    free(dup);
+                } else {
+                    ptr2 = ptr2->next;
                 }
             }
-
-
+            ptr1 = ptr1->next;
         }
-//        while (currLeft) {
-//
-//            newCluster.add(currLeft->p);
-//            currLeft = currLeft->next;
-//        }
-//        currLeft = lhs.points;
-//        while(currRight->p== currLeft->p){
-//            currRight = currRight->next;
-//        }
-//        for (LNodePtr curr = currRight; curr != nullptr; curr = curr->next) {
-//            if (currLeft->p != curr->p) {
-//                newCluster.add(curr->p);
-//
-//            }
-//        }
-//        while (currRight) {
-//            if (currRight->p != currLeft->p) {
-//                newCluster.add(currRight->p);
-//                currRight = currRight->next;
-//            }
-//            else
-//                currRight = currRight->next;
-//        }
         return newCluster;
     }
 
@@ -186,12 +166,18 @@ namespace Clustering {
 
     Cluster &Cluster::operator-=(const Point &rhs) {
         LNodePtr curr = points;
+        LNodePtr newNode = new LNode;
+        PointPtr ptr = new Point(rhs);
+        newNode->p = ptr;
+        newNode->next = NULL;
+        int i = 0;
         while (curr) {
-            if (curr->p== &rhs) {
+            if (curr->p->getvalues()[i] == rhs.getvalues()[i]) {
                 points->next = curr->next;
                 delete curr->p;
                 delete curr;
             } else {
+                i++;
                 curr = curr->next;
             }
         }
