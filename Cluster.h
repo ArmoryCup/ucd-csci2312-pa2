@@ -20,6 +20,10 @@ namespace Clustering {
         LNodePtr points; // node pointer to points to the points of the linked list
         int m_size;
     public:
+        int getM_size() const {
+            return m_size;
+        }
+
         Cluster() : m_size(0), points(nullptr) { } // default ctor
 
         Cluster(const Cluster &); // copy ctor

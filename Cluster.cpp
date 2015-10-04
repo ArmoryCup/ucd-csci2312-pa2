@@ -6,11 +6,28 @@ using namespace std;
 namespace Clustering {
 
     Cluster::Cluster(const Cluster &rhs) {
-        this->points = NULL;
-        LNodePtr newCurr = rhs.points;
-        while (newCurr) {
-            add(newCurr->p);
-            newCurr = newCurr->next;
+        m_size = rhs.m_size;
+        LNodePtr newNode;                // to point to the new node
+        LNodePtr curr = nullptr;         // to move thorugh the lsit
+
+        LNodePtr copy = rhs.points;
+        this->points = nullptr;
+        while (copy) {
+            // Allocate a new node and store ptr there.
+            newNode = new LNode;
+
+            newNode->p = copy->p;
+            newNode->next = nullptr;
+            if (!points) {
+                points = newNode;
+            } else {
+                curr = points;
+                while (curr->next) {
+                    curr = curr->next;
+                }
+                curr->next = newNode;
+            }
+            copy = copy->next;
         }
     }
 
@@ -20,7 +37,6 @@ namespace Clustering {
 
         // Allocate a new node and store ptr there.
         newNode = new LNode;
-
         newNode->p = ptr;
         newNode->next = nullptr;
         if (!points) {
@@ -32,7 +48,25 @@ namespace Clustering {
             }
             curr->next = newNode;
         }
-        m_size++;
+        this->m_size++;
+        // sort points in the list in lexicographic order
+        LNodePtr currNode = points, nextNode;
+        PointPtr dup;
+        while (currNode) {
+            nextNode = currNode;
+            while (nextNode->next!=NULL) {
+                if (currNode->p > nextNode->next->p) {
+                    dup = nextNode->next->p;
+                    nextNode->next->p=currNode->p;
+                    currNode->p=dup;
+
+                    nextNode = nextNode->next;
+                } else {
+                    nextNode = nextNode->next;
+                }
+            }
+            currNode = currNode->next;
+        }
     }
 
 
@@ -90,33 +124,29 @@ namespace Clustering {
     }
 
     const Cluster operator+(const Cluster &lhs, const Cluster &rhs) {
-        Cluster newCluster;
-        LNodePtr curr1, curr2, dup;
 
-        curr1 = lhs.points, curr2 = rhs.points;
-        while (curr1) {
-            newCluster.add(curr1->p);
-            curr1 = curr1->next;
-        }
-        while (curr2) {
-            newCluster.add(curr2->p);
-            curr2 = curr2->next;
+        Cluster newCluster = lhs;
+        LNodePtr newPoints = rhs.points;
+        while (newPoints) {
+            newCluster.add(newPoints->p);
+            newCluster.m_size++;
+            newPoints = newPoints->next;
         }
 
-        LNodePtr ptr1 = newCluster.points,
-                ptr2;
-        while (ptr1 != NULL ) {
-            ptr2 = ptr1;
-            while (ptr2->next != NULL) {
-                if (ptr1->p == ptr2->next->p) {
-                    dup = ptr2->next;
-                    ptr2->next = ptr2->next->next;
-                    free(dup);
+        LNodePtr currNode = newCluster.points, nextNode, dup;
+        while (currNode) {
+            nextNode = currNode;
+            while (nextNode->next != NULL) {
+                if (currNode->p == nextNode->next->p) {
+                    dup = nextNode->next;
+                    nextNode->next = nextNode->next->next;
+                    delete dup;
+                    newCluster.m_size--;
                 } else {
-                    ptr2 = ptr2->next;
+                    nextNode = nextNode->next;
                 }
             }
-            ptr1 = ptr1->next;
+            currNode = currNode->next;
         }
         return newCluster;
     }
@@ -165,31 +195,83 @@ namespace Clustering {
     }
 
     Cluster &Cluster::operator-=(const Point &rhs) {
-        LNodePtr curr = points;
-        LNodePtr newNode = new LNode;
-        PointPtr ptr = new Point(rhs);
-        newNode->p = ptr;
-        newNode->next = NULL;
+        LNodePtr curr = points, prev = points, del;
+        int dim = points->p->getM_Dim();
         int i = 0;
-        while (curr) {
+        while (curr && curr->next != nullptr) {
             if (curr->p->getvalues()[i] == rhs.getvalues()[i]) {
-                points->next = curr->next;
-                delete curr->p;
-                delete curr;
+                del = curr;
+                if (curr->next == NULL) {
+                    curr = prev;
+                    curr->next = NULL;
+                    delete del->p;
+                    delete del;
+                } else {
+                    curr = curr->next;
+                    prev->next = prev->next->next;
+                    delete del->p;
+                    delete del;
+                }
+
+
             } else {
-                i++;
+                prev = curr;
                 curr = curr->next;
             }
         }
         return *this;
     }
 
+
     Cluster &Cluster::operator+=(const Cluster &rhs) {
+        LNodePtr newPoints;
+
+        newPoints = rhs.points;
+        while (newPoints) {
+            this->add(newPoints->p);
+            newPoints = newPoints->next;
+        }
+
+        LNodePtr currNode = this->points, nextNode, dup;
+        while (currNode) {
+            nextNode = currNode;
+            while (nextNode->next != NULL) {
+                if (currNode->p == nextNode->next->p) {
+                    dup = nextNode->next;
+                    nextNode->next = nextNode->next->next;
+                    delete dup;
+                    this->m_size--;
+                } else {
+                    nextNode = nextNode->next;
+                }
+            }
+            currNode = currNode->next;
+        }
+
 
         return *this;
     }
 
+
     Cluster &Cluster::operator-=(const Cluster &rhs) {
-        return *this;
+        Cluster *intersect = new Cluster;
+
+        LNodePtr curr = this->points,
+                rhsCurr = rhs.points;
+        while (curr) {
+            rhsCurr = rhs.points;
+            while (rhsCurr) {
+                if (curr->p == rhsCurr->p) {
+                    intersect->add(rhsCurr->p);
+//                    rhsCurr = rhsCurr->next;
+                }
+                rhsCurr = rhsCurr->next;
+            }
+            curr = curr->next;
+        }
+
+
+        this->~Cluster();
+        return *intersect;
     }
 }

@@ -5,6 +5,10 @@
 using namespace std;
 using namespace Clustering;
 
+int v(int &v){
+    int *a = new int(v);
+    return *a;
+}
 
 int main(void) {
 
@@ -24,38 +28,26 @@ int main(void) {
     PointPtr p6 = new Point(dim, arr6), p7 = new Point(dim, arr7);;
 
     Cluster c1;
-    c1.add(p1);
-    c1.add(p2);
     c1.add(p6);
-
-//    PointPtr ptr = c1.remove(p4);
-//    c1.add(p3);
-//    cout << endl << "c1\n" << c1;
-//    c1.add(c1.remove(p4));
-//    cout << endl << "c1\n" << c1;
+    c1.add(p2);
+    c1.add(p1);
+cout << c1;
 
     Cluster c2;
-    c2.add(p2);
     c2.add(p5);
-    c2.add(p1);
+    c2.add(p2);
+    c2.add(p6);
 
-    Cluster c3;
-    c3 = c1 + c2;
+    double a[dim] ={1,1};
+    double b[dim] = {2,2};
+    Point p(dim, a);
+    Point pp(dim, b);
 
-    cout << "\nC3\n" << c3;
+//    Cluster w;
+//    w=c2-=c1;
+//    cout <<"Size: "<<w.getM_size() <<"\nC2" << endl<< w;
 
-    Point p(dim, arr);
-//    c2+= p;
-//    c2-= p;
-//    cout <<"\nC2 "<< endl<< c2;
-//    cout << "c2\n" << c2;
-//
-//    Cluster c22 = c1 + c2;
-//    cout << "c22\n" << c22;
 
-/*    Cluster c22 = c1 + c2;
-    c22 = c1 + c2;                      // Error when assigning c22
-    cout << "c22\n" << c22;*/
 
     return 0;
 
