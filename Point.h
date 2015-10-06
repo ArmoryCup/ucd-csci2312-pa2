@@ -5,82 +5,54 @@
 #ifndef CLUSTERING_POINT_H
 #define CLUSTERING_POINT_H
 namespace Clustering {
-
     class Point {
-
-        int m_Dim;              // to hold dimension of a pointer
-        double *values;   // to hold dimensions of array of double
+        int dim;        // number of dimensions of the point
+        double *values; // values of the point's dimensions
 
     public:
-        // Constructors
-        Point();                                       // default constructor. It is two dimension pointer by default
-        Point(const int);                              // constructor that takes an int for the dimension
-        Point(const int, const double *);              // constructor that takes an int for the dimension
-        //  and an array of doubles
+        Point(int);
+        Point(int,double *);
 
-        Point(const Point &);                           // copy constructor
-
-        double *getvalues() const {
-            return values;
-        }
-
-        void setM_Dim(int dim) {                        // set dimention for the Points
-            Point::m_Dim = dim;
-        }
-
-
-        void setValue(int index, double value) {      // set value to the element of the array
-            Point::values[index] = value;         // assign the selected element of the array to new value
-        }
-
-        // Destructor
+        // Big three: cpy ctor, overloaded operator=, dtor
+        Point(const Point &);
+        Point &operator=(const Point &);
         ~Point();
 
-        // asignment overloaded operator
-        Point &operator=(const Point &);
+        // Accessors & mutators
+        int getDims() const { return dim; }
+        void setValue(int, double);
+        double getValue(int) const;
 
-        // << overloading operator
-        friend std::ostream &operator<<(std::ostream &os, const Clustering::Point &point);
+        // Functions
+        double distanceTo(const Point &) const;
 
-        // Boolean overloading operators
-        friend bool operator==(Point &p1, Point &p2);
+        // Overloaded operators
 
-        friend bool operator!=(Point &p1, Point &p2);
+        // Members
+        Point &operator*=(double);
+        Point &operator/=(double);
+        const Point operator*(double) const; // prevent (p1*2) = p2;
+        const Point operator/(double) const;
 
-        friend bool operator<(Point &p1, Point &p2);
+        // Note: 1-based index!
+        double &operator[](int index) { return values[index - 1]; } // TODO out-of-bds?
 
-        friend bool operator>(Point &p1, Point &p2);
-
-        friend bool operator<=(Point &p1, Point &p2);
-
-        friend bool operator>=(Point &p1, Point &p2);
-
-
-        // Arithmetic overloading operators
+        // Friends
+        friend Point &operator+=(Point &, const Point &);
+        friend Point &operator-=(Point &, const Point &);
         friend const Point operator+(const Point &, const Point &);
-
         friend const Point operator-(const Point &, const Point &);
 
-        friend const Point operator*(const Point &, const double);
+        friend bool operator==(const Point &, const Point &);
+        friend bool operator!=(const Point &, const Point &);
 
-        friend const Point operator/(const Point &, const double);
+        friend bool operator<(const Point &, const Point &);
+        friend bool operator>(const Point &, const Point &);
+        friend bool operator<=(const Point &, const Point &);
+        friend bool operator>=(const Point &, const Point &);
 
-        Point &operator+=(const Point &);
-
-        Point &operator-=(const Point &);
-
-        Point &operator*=(const Point &);
-
-        Point &operator*=(const double);
-
-        Point &operator/=(const Point &);
-
-
-        int getM_Dim() const { return m_Dim; }
-
-        // this function return a double that approximates the distance between points.
-        double distanceTo(Point &point);
-
+        friend std::ostream &operator<<(std::ostream &, const Point &);
+        friend std::istream &operator>>(std::istream &, Point &);
     };
 }
 #endif // CLUSTERING_POINT_H

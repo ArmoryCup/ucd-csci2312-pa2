@@ -33,7 +33,7 @@ namespace Clustering {
         ~Cluster(); // dtor
 
         void add(const PointPtr &); // add a point
-        PointPtr &remove(const PointPtr &); // remove a point and return it so we can add it to another cluster
+        const PointPtr &remove(const PointPtr &); // remove a point and return it so we can add it to another cluster
 
         Cluster &operator+=(const Cluster &rhs); // union
         Cluster &operator-=(const Cluster &rhs); // (asymmetric) difference
@@ -49,7 +49,6 @@ namespace Clustering {
 
         friend const Cluster operator+(const Cluster &lhs, const PointPtr &rhs);
         friend const Cluster operator-(const Cluster &lhs, const PointPtr &rhs);
-
 
     };
 }
