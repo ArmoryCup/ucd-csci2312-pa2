@@ -101,8 +101,7 @@ namespace Clustering {
         }
         return false;
     }
-
-    bool operator>(Point &p1, Point &p2) {
+    bool operator>(const Point &p1,const Point &p2) {
         int iDim = p1.getDims();
         for (int i = 0; i < iDim; ++i) {
             if (p1.getValue(i) > p2.getValue(i))
@@ -113,18 +112,9 @@ namespace Clustering {
         return false;
     }
 
-    bool operator<=(Point &p1, Point &p2) {
-        int size = p1.getDims();
-        for (int i = 0; i < size; ++i) {
-            if (p1.getValue(i) <= p2.getValue(i))
-                return true;
-            else if (p2.getValue(i) > p1.getValue(i))
-                return false;
-        }
-        return false;
-    }
 
-    bool operator>=(Point &p1, Point &p2) {
+
+    bool operator>=(const Point &p1,const Point &p2) {
         int size = p1.getDims();
         for (int i = 0; i < size; ++i) {
             if (p1.getValue(i)>= p2.getValue(i))
@@ -256,4 +246,17 @@ namespace Clustering {
         return distance;
         return 0;
     }
+
+
+    bool operator<=(const Point &point, const Point &point1) {
+        int size = point.getDims();
+        for (int i = 0; i < size; ++i) {
+            if (point.getValue(i) <= point1.getValue(i))
+                return true;
+            else if (point1.getValue(i) >= point.getValue(i))
+                return false;
+        }
+    }
+
+
 }
