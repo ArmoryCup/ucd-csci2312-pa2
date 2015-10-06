@@ -6,7 +6,11 @@
 namespace Clustering {
 
     Point::Point(const int dims) {
+        if(dim!=0){
+            delete[] values;
+        }
         dim = dims;
+
         values = new double[dims];
         for (size_t i = 0; i < dims; i++) {
             values[i] = 0;
@@ -141,6 +145,7 @@ namespace Clustering {
 
     const Point operator-(const Point &operand1, const Point &operand2) {
         Point temp(operand1);
+//        operand1.~Point();
 
         for (int i = 0; i < temp.dim; ++i) {
             temp.values[i] = operand1.values[i] - operand2.values[i];
@@ -159,6 +164,10 @@ namespace Clustering {
     }
 
     Point &Point::operator/=(double d) {
+        if(d==0){
+            std::cout << "Error, attempting to divide by zero.\n";
+            return *this;
+        }
         for (int i = 0; i < dim; ++i) {
             assert(!values[i] == 0);
             values[i] /= d;
@@ -167,10 +176,12 @@ namespace Clustering {
     }
 
     const Point Point::operator*(double d) const {
-        for (int i = 0; i < dim; ++i) {
-            values[i] = values[i] * d;
+        Point temp = *this;
+        for (int i = 0; i < temp.getDims(); ++i) {
+
+            temp.values[i] = values[i] * d;
         }
-        return *this;
+        return temp;
     }
 
     const Point Point::operator/(double d) const {
