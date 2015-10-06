@@ -6,9 +6,6 @@
 namespace Clustering {
 
     Point::Point(const int dims) {
-        if(dim!=0){
-            delete[] values;
-        }
         dim = dims;
 
         values = new double[dims];
