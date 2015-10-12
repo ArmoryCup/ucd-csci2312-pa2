@@ -100,18 +100,14 @@ _double *values;_  ``` // values of the point's dimensions```
         <h6>void add(const PointPtr &); // add a point</h6>
         <h6>const PointPtr &remove(const PointPtr &);</h6>
         <p> Removes a point and return it so we can add it to another cluster</p>
-
        <h6> Cluster &operator+=(const Cluster &rhs);</h6>
        <h6> Cluster &operator-=(const Cluster &rhs); </h6>
-
        <h6> Cluster &operator+=(const Point &rhs);</h6>
         <h6>Cluster &operator-=(const Point &rhs);</h6>
         <h6>friend bool operator==(const Cluster &lhs, const Cluster &rhs);</h6>
-
         <h6>friend const Cluster operator+(const Cluster &lhs, const Cluster &rhs);</h6>
         <h6>friend const Cluster operator-(const Cluster &lhs, const Cluster &rhs);</h6>
         <h6>friend const Cluster operator+(const Cluster &lhs, const PointPtr &rhs);</h6>
         <h6>friend const Cluster operator-(const Cluster &lhs, const PointPtr &rhs);</h6>
-
         <h6>friend std::ostream &operator<<(std::ostream &os, const Clustering::Cluster &c1);</h6>
         <h6>friend std::istream &operator>>(std::istream &os, Clustering::Cluster &c1);</h6>
