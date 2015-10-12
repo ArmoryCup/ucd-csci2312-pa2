@@ -5,8 +5,8 @@
 
 Coordinates are double-precision floating point.
 
-_int dim;_    `` // number of dimensions of the point ``
-_double *values;_  ``` // values of the point's dimensions```
+<h6> int dim;     // number of dimensions of the point </h6>
+<h6> double *values;   // values of the point's dimensions </h6>
 
   <h6> Point(int);</h6>
 	<p>takes int for the number dimension and set values of the Point's dimenstion to zero</p>
@@ -32,11 +32,11 @@ _double *values;_  ``` // values of the point's dimensions```
   <h6> double getValue(int) const;
 <p>get the values of a point's dimensions</p>
 
- ``` // Functions ```
+ * // Functions *
  <h6>  double distanceTo(const Point &) const;
 <p>calculates distance between two points </p>
 
- ```  // Overloaded operators ```
+ *  // Overloaded operators *
  <h6> friend bool operator==(const Point &, const Point &);</h6>
 	<p>Compares the values of two point's dimensions. Returns true if they are equal.</p>
  <h6> friend bool operator!=(const Point &, const Point &);</h6>
@@ -47,13 +47,15 @@ _double *values;_  ``` // values of the point's dimensions```
   <h6> friend bool operator>(const Point &, const Point &);
 	<p>Compares the values of two point's dimensions. Returns true if the values of the first point dimenstion 	is greater than the values of the other point dimention.</p>
  <h6> friend bool operator<=(const Point &, const Point &);
-	<p>Compares the values of two point's dimensions. Returns true if the values of the first point dimenstion 	is less or equal than the values of the other point dimention.</p>
- <h6> friend bool operator>=(const Point &, const Point &);
-	<p>Compares the values of two point's dimensions. Returns true if the values of the first point dimenstion 	is greater or equal than the values of the other point dimention.</p>
+	<p>Compares the values of two point's dimensions. Returns true if the values of the first point 			dimenstion</p>
+	<p>is less or equal than the values of the other point dimention.</p>
+ <h6> friend bool operator>=(const Point &, const Point &);</h6>
+	<p>Compares the values of two point's dimensions. Returns true if the values of the first point dimenstion</p> 	
+	<p>is greater or equal than the values of the other point dimention.</p>
 
         // Friends
  <h6> friend Point &operator+=(Point &, const Point &);</h6>
-	 <p>Adds the values of a point's dimension on the right of the operator to the values of a point's 			dimension on the left of the operator and stores the result  on the left of the operator.</p> 
+	 <p>Adds the values of a point's dimension on the right of the operator to the values of a point's</p>			<p>dimension on the left of the operator and stores the result  on the left of the operator.</p> 
  <h6> friend Point &operator-=(Point &, const Point &);</h6>
  	<p>Substracts the values of a point's dimension on the right of the operator to the values of a point's 		dimension on the left of the operator and stores the result on the left of the operator.</p>
  <h6> friend const Point operator+(const Point &, const Point &);</h6>
@@ -76,13 +78,11 @@ _double *values;_  ``` // values of the point's dimensions```
        <h6>typedef Point *PointPtr; // An alias to the  Point * type </h6> 
 	<h6>typedef struct LNode *LNodePtr; // An alias to the Node * type </h6>
         
-    <h6>struct LNode {};</h6>
+    <h6>struct LNode;</h6>
 	<p> Nested structure type Node to support a singly-linked list.</p>
 
 
-        <h6>LNodePtr points; // Node pointer to points to the points of the linked list </h6>
-        <h6>int m_size;	     // to hold a number of points in a cluster </h6>
-      
+        
       
         <h6>int getM_size() const;</h6>
  		<p>Returns a quantity of points</p>
