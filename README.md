@@ -1,7 +1,7 @@
 ## CSCI 2312: Programming Assignment 2
 * * *
 <h4>Point Class</h4>```
-A 3-dimensional point class!
+<p>A 3-dimensional point class!</p>
 
 Coordinates are double-precision floating point.
 
@@ -36,13 +36,14 @@ _double *values;_  ``` // values of the point's dimensions```
  <h6>  double distanceTo(const Point &) const;
 <p>calculates distance between two points </p>
 
- ```  // Overloaded operators```
+ ```  // Overloaded operators ```
  <h6> friend bool operator==(const Point &, const Point &);</h6>
 	<p>Compares the values of two point's dimensions. Returns true if they are equal.</p>
- <h6>  friend bool operator!=(const Point &, const Point &);</h6>
+ <h6> friend bool operator!=(const Point &, const Point &);</h6>
 	<p>Compares the values of two point's dimensions. Returns true if they are not equal.</p>
  <h6>friend bool operator<(const Point &, const Point &);</h6>
-	<p>Compares the values of two point's dimensions. Returns true if the values of the first point dimenstion is less than the values of the other point dimention.</p>
+	<p>Compares the values of two point's dimensions. Returns true if the values of the first point dimenstion</p>
+	<p>is less than the values of the other point dimention.</p>
   <h6> friend bool operator>(const Point &, const Point &);
 	<p>Compares the values of two point's dimensions. Returns true if the values of the first point dimenstion 	is greater than the values of the other point dimention.</p>
  <h6> friend bool operator<=(const Point &, const Point &);
@@ -72,23 +73,16 @@ _double *values;_  ``` // values of the point's dimensions```
  	<p>Displays the values of the point's dimensions to the screen </p>
 
 <h4>Cluster Class</h4>
-    ``` 
-    typedef Point *PointPtr; // An alias for the type Point * 
-    	typedef struct LNode *LNodePtr; // An alias to the Node * type
-     ```
-
-```
-    // Nested structure type Node to support a singly-linked list.
-    struct LNode {
-        PointPtr p;
-        LNode *next;
-    };
-```
-	```
-        <h6>LNodePtr points; // Node pointer to points to the points of the linked list
+       <h6>typedef Point *PointPtr; // An alias to the  Point * type </h6> 
+	<h6>typedef struct LNode *LNodePtr; // An alias to the Node * type </h6>
         
-        int m_size;	     // to hold a number of points in a cluster
-      ```
+    <h6>struct LNode {};</h6>
+	<p> Nested structure type Node to support a singly-linked list.</p>
+
+
+        <h6>LNodePtr points; // Node pointer to points to the points of the linked list </h6>
+        <h6>int m_size;	     // to hold a number of points in a cluster </h6>
+      
       
         <h6>int getM_size() const;</h6>
  		<p>Returns a quantity of points</p>
