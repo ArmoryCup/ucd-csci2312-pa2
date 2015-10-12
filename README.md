@@ -6,7 +6,6 @@ A 3-dimensional point class!
 Coordinates are double-precision floating point.
 
 _int dim;_    `` // number of dimensions of the point ``
-
 _double *values;_  ``` // values of the point's dimensions```
 
   <h6> Point(int);</h6>
@@ -38,86 +37,81 @@ _double *values;_  ``` // values of the point's dimensions```
 <p>calculates distance between two points </p>
 
  ```  // Overloaded operators```
-
- <h6> friend bool operator==(const Point &, const Point &);
+ <h6> friend bool operator==(const Point &, const Point &);</h6>
 	<p>Compares the values of two point's dimensions. Returns true if they are equal.</p>
- <h6>  friend bool operator!=(const Point &, const Point &);
-<p>Compares the values of two point's dimensions. Returns true if they are not equal.</p>
- <h6>friend bool operator<(const Point &, const Point &);
-<p>Compares the values of two point's dimensions. Returns true if the values of the first point dimenstion is less than the values of the other point dimention.</p>
+ <h6>  friend bool operator!=(const Point &, const Point &);</h6>
+	<p>Compares the values of two point's dimensions. Returns true if they are not equal.</p>
+ <h6>friend bool operator<(const Point &, const Point &);</h6>
+	<p>Compares the values of two point's dimensions. Returns true if the values of the first point dimenstion is less than the values of the other point dimention.</p>
   <h6> friend bool operator>(const Point &, const Point &);
-Compares the values of two point's dimensions. Returns true if the values of the first point dimenstion is greater than the values of the other point dimention.</p>
+	<p>Compares the values of two point's dimensions. Returns true if the values of the first point dimenstion 	is greater than the values of the other point dimention.</p>
  <h6> friend bool operator<=(const Point &, const Point &);
-<p>Compares the values of two point's dimensions. Returns true if the values of the first point dimenstion is less or equal than the values of the other point dimention.</p>
+	<p>Compares the values of two point's dimensions. Returns true if the values of the first point dimenstion 	is less or equal than the values of the other point dimention.</p>
  <h6> friend bool operator>=(const Point &, const Point &);
-<p>Compares the values of two point's dimensions. Returns true if the values of the first point dimenstion is greater or equal than the values of the other point dimention.</p>
+	<p>Compares the values of two point's dimensions. Returns true if the values of the first point dimenstion 	is greater or equal than the values of the other point dimention.</p>
 
         // Friends
- <h6> friend Point &operator+=(Point &, const Point &);
- Adds the values of a point's dimension on the right of the operator to the values of a point's dimension on the left of the operator and stores the result  on the left of the operator. 
- <h6> friend Point &operator-=(Point &, const Point &);
- Substracts the values of a point's dimension on the right of the operator to the values of a point's dimension on the left of the operator and stores the result on the left of the operator. 
- <h6> friend const Point operator+(const Point &, const Point &);
-Adds the values of a point's dimention that is on left side to the values of a point's dimention that is on the left
+ <h6> friend Point &operator+=(Point &, const Point &);</h6>
+	 <p>Adds the values of a point's dimension on the right of the operator to the values of a point's 			dimension on the left of the operator and stores the result  on the left of the operator.</p> 
+ <h6> friend Point &operator-=(Point &, const Point &);</h6>
+ 	<p>Substracts the values of a point's dimension on the right of the operator to the values of a point's 		dimension on the left of the operator and stores the result on the left of the operator.</p>
+ <h6> friend const Point operator+(const Point &, const Point &);</h6>
+	<p>Adds the values of a point's dimention that is on left side to the values of a point's dimention that is 	on the left</p>
+ <h6> friend const Point operator-(const Point &, const Point &);</h6>
 
- <h6> friend const Point operator-(const Point &, const Point &);
-
-
- <h6> Point &operator*=(double);
-multiplies the given number to the values of the point's dimensions
+ <h6> Point &operator*=(double);</h6>
+	<p>multiplies the given number to the values of the point's dimensions</p>
 
 <h6>Point &operator/=(double);
- <h6>  const Point operator*(double) const; // prevent (p1*2) = p2;
- <h6> const Point operator/(double) const;
+ <h6>  const Point operator*(double) const; </h6>
+ <h6> const Point operator/(double) const;</h6>
 
-        // Note: 1-based index!
- <h6> double &operator[](int index) { return values[index - 1]; } // TODO out-of-bds?
+ <h6> double &operator[](int index); </h6>
+	<p> Returns the values of the point's dimensions</p>
+ <h6> friend std::ostream &operator<<(std::ostream &, const Point &);</h6>
+ 	<p>Displays the values of the point's dimensions to the screen </p>
 
- <h6> friend std::ostream &operator<<(std::ostream &, const Point &);
- <h6> friend std::istream &operator>>(std::istream &, Point &);
+<h4>Cluster Class</h4>
+    ``` 
+    typedef Point *PointPtr; // An alias for the type Point * 
+    	typedef struct LNode *LNodePtr; // An alias to the Node * type
+     ```
 
-
-
-    typedef Point *PointPtr;
-    typedef struct LNode *LNodePtr;
-
+```
+    // Nested structure type Node to support a singly-linked list.
     struct LNode {
         PointPtr p;
         LNode *next;
     };
+```
+	```
+        <h6>LNodePtr points; // Node pointer to points to the points of the linked list
+        
+        int m_size;	     // to hold a number of points in a cluster
+      ```
+      
+        <h6>int getM_size() const;</h6>
+ 		<p>Returns a quantity of points</p>
+        <h6>Cluster(); </h6>
+        	<p>Default constructor. Initializes the members of the class to zero</p>
+        <h6>Cluster(const Cluster &); </h6>
+        <h6>Cluster &operator=(const Cluster &);</h6> 
+        <h6>~Cluster();</h6> 
+        <h6>void add(const PointPtr &); // add a point</h6>
+        <h6>const PointPtr &remove(const PointPtr &);</h6>
+        <p> Removes a point and return it so we can add it to another cluster</p>
 
-    class Cluster {
+       <h6> Cluster &operator+=(const Cluster &rhs);</h6>
+       <h6> Cluster &operator-=(const Cluster &rhs); </h6>
 
-        LNodePtr points;                    // node pointer to points to the points of the linked list
-        int m_size;
-        static unsigned int __idGenerator;  // for use with __id
-        bool __release_points;
+       <h6> Cluster &operator+=(const Point &rhs);</h6>
+        <h6>Cluster &operator-=(const Point &rhs);</h6>
+        <h6>friend bool operator==(const Cluster &lhs, const Cluster &rhs);</h6>
 
-    public:
-        static const char POINT_CLUSTER_ID_DELIM = ':';       // for use with operator<<
-        int getM_size() const {
-            return m_size;
-        }
+        <h6>friend const Cluster operator+(const Cluster &lhs, const Cluster &rhs);</h6>
+        <h6>friend const Cluster operator-(const Cluster &lhs, const Cluster &rhs);</h6>
+        <h6>friend const Cluster operator+(const Cluster &lhs, const PointPtr &rhs);</h6>
+        <h6>friend const Cluster operator-(const Cluster &lhs, const PointPtr &rhs);</h6>
 
-        Cluster() : m_size(0), points(nullptr) { } // default ctor
-        Cluster(const Cluster &); // copy ctor
-        Cluster &operator=(const Cluster &); // assignment operator
-        ~Cluster(); // dtor
-
-        void add(const PointPtr &); // add a point
-        const PointPtr &remove(const PointPtr &); // remove a point and return it so we can add it to another cluster
-
-        Cluster &operator+=(const Cluster &rhs); // union
-        Cluster &operator-=(const Cluster &rhs); // (asymmetric) difference
-
-        Cluster &operator+=(const Point &rhs); // add point
-        Cluster &operator-=(const Point &rhs); // remove point
-        friend bool operator==(const Cluster &lhs, const Cluster &rhs);
-
-        friend const Cluster operator+(const Cluster &lhs, const Cluster &rhs);
-        friend const Cluster operator-(const Cluster &lhs, const Cluster &rhs);
-        friend const Cluster operator+(const Cluster &lhs, const PointPtr &rhs);
-        friend const Cluster operator-(const Cluster &lhs, const PointPtr &rhs);
-
-        friend std::ostream &operator<<(std::ostream &os, const Clustering::Cluster &c1);
-        friend std::istream &operator>>(std::istream &os, Clustering::Cluster &c1);
+        <h6>friend std::ostream &operator<<(std::ostream &os, const Clustering::Cluster &c1);</h6>
+        <h6>friend std::istream &operator>>(std::istream &os, Clustering::Cluster &c1);</h6>
