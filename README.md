@@ -1,6 +1,6 @@
 <h2>CSCI 2312: Programming Assignment 2</h2>
 <hr/>
-<p><h4>Point Class</h4>```<br/><p>A 3-dimensional point class!</p></p>
+<p><h4>Point Class</h4><br/><p>A 3-dimensional point class!</p></p>
 <p>Coordinates are double-precision floating point.</p>
 <h6> int dim;     // number of dimensions of the point </h6>
 <h6> double *values;   // values of the point's dimensions </h6>
