@@ -9,9 +9,13 @@ namespace Clustering {
         int dim;        // number of dimensions of the point
         double *values; // values of the point's dimensions
 
+
     public:
+
+        static const char POINT_VALUE_DELIM = ',';
+
         Point(int);
-        Point(int,double *);
+        Point(int, double *);
 
         // Big three: cpy ctor, overloaded operator=, dtor
         Point(const Point &);
@@ -20,15 +24,15 @@ namespace Clustering {
 
         // Accessors & mutators
         int getDims() const { return dim; }
-        void setValue(int, double);
+        void setValue(int i, double d) {
+            values[i] = d;
+        }
         double getValue(int) const;
 
         // Functions
         double distanceTo(const Point &) const;
 
         // Overloaded operators
-
-        // Members
         Point &operator*=(double);
         Point &operator/=(double);
         const Point operator*(double) const; // prevent (p1*2) = p2;
@@ -45,7 +49,6 @@ namespace Clustering {
 
         friend bool operator==(const Point &, const Point &);
         friend bool operator!=(const Point &, const Point &);
-
         friend bool operator<(const Point &, const Point &);
         friend bool operator>(const Point &, const Point &);
         friend bool operator<=(const Point &, const Point &);
