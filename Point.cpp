@@ -2,6 +2,7 @@
 #include "Point.h"
 #include <cassert>
 #include <iostream>
+#include <fstream>
 
 namespace Clustering {
 
@@ -44,28 +45,6 @@ namespace Clustering {
         return values[i];
     }
 
-// this function return a double that approximates the distance between the two points.
-//    double Point::distanceTo(Point &point)  {
-//
-//        double distance;
-//        double d;
-//        for (int i = 0; i < dim; ++i) {
-//            d += pow((point.getValue(i)- values[i]), 2);
-//        }
-//        distance = sqrt(d);
-//        return distance;
-//    }
-
-    std::ostream &operator<<(std::ostream &os, const Point &point) {
-
-        os << "(" << point.values[0];
-        for (int i = 1; i < point.dim; i++) {
-            os << ", " << point.values[i];
-        }
-        os << ")";
-
-    }
-
 // return the object on the left side of the = sign
     Point &Point::operator=(const Point &rightSide) {
         if (this == &rightSide)
@@ -82,10 +61,6 @@ namespace Clustering {
     }
 
 
-
-
-
-
     bool operator<(const Point &p1, const Point &p2) {
 
         for (int i = 0; i < p1.dim; ++i) {
@@ -93,12 +68,11 @@ namespace Clustering {
                 return true;
             else if (p2.values[i] < p1.values[i])
                 return false;
-//
-//            else return false;
         }
         return false;
     }
-    bool operator>(const Point &p1,const Point &p2) {
+
+    bool operator>(const Point &p1, const Point &p2) {
         int iDim = p1.getDims();
         for (int i = 0; i < iDim; ++i) {
             if (p1.getValue(i) > p2.getValue(i))
@@ -110,11 +84,10 @@ namespace Clustering {
     }
 
 
-
-    bool operator>=(const Point &p1,const Point &p2) {
+    bool operator>=(const Point &p1, const Point &p2) {
         int size = p1.getDims();
         for (int i = 0; i < size; ++i) {
-            if (p1.getValue(i)>= p2.getValue(i))
+            if (p1.getValue(i) >= p2.getValue(i))
                 return true;
             else
                 return false;
@@ -141,8 +114,6 @@ namespace Clustering {
     }
 
 
-
-
     Point &Point::operator*=(const double d) {
         for (int i = 0; i < dim; ++i) {
             values[i] *= d;
@@ -151,7 +122,7 @@ namespace Clustering {
     }
 
     Point &Point::operator/=(double d) {
-        if(d==0){
+        if (d == 0) {
             std::cout << "Error, attempting to divide by zero.\n";
             return *this;
         }
@@ -200,23 +171,11 @@ namespace Clustering {
     }
 
     bool operator==(const Point &point, const Point &point1) {
-        /*
-         *  bool operator==(Point &p1, Point &p2) {
-
-        for (int i = 0; i < p1.dim; ++i) {
-            if (p1.values[i] == p2.values[i])
-                return true;
-            else return false;
-        }
-
-    }
-         * */
         for (int i = 0; i < point.dim; ++i) {
             if (point.values[i] == point1.values[i]) {
                 return true;
-            }else{
+            } else {
                 return false;
-                break;
             }
         }
 
@@ -237,7 +196,7 @@ namespace Clustering {
         double distance;
         double d;
         for (int i = 0; i < dim; ++i) {
-            d += pow((point.getValue(i)- values[i]), 2);
+            d += pow((point.getValue(i) - values[i]), 2);
         }
         distance = sqrt(d);
         return distance;
@@ -255,5 +214,20 @@ namespace Clustering {
         }
     }
 
+    std::ostream &operator<<(std::ostream &os, const Point &point) {
 
+        os << "(" << point.values[0];
+        for (int i = 1; i < point.dim; i++) {
+            os << Point::POINT_VALUE_DELIM << point.values[i];
+        }
+        os << ")";
+
+    }
+
+    std::istream &operator>>(std::istream &istream, Point &point) {
+        for (int i = 0; i < point.dim; ++i) {
+            istream >> point.values[i];
+        }
+        return istream;
+    }
 }
