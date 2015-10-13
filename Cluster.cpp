@@ -1,6 +1,9 @@
 #include "Cluster.h"
 #include <iostream>
 #include <cassert>
+#include <fstream>
+#include <sstream>
+#include "Point.h"
 
 using namespace std;
 namespace Clustering {
@@ -102,6 +105,7 @@ namespace Clustering {
             }
             return *this;
         }
+        __idGenerator++;
     }
 
 
@@ -203,19 +207,7 @@ namespace Clustering {
         }
     }
 
-
-    std::ostream &operator<<(std::ostream &os, const Cluster &c1) {
-        LNodePtr n = c1.points;
-        os << *(n->p) << " ";
-        while (n->next) {
-            n = n->next;
-            os << *(n->p) << " ";
-        }
-        os << std::endl;
-    }
-
     Cluster &Cluster::operator+=(const Point &rhs) {
-
         PointPtr newPoint = new Point(rhs);
         add(newPoint);
         return *this;
@@ -409,4 +401,57 @@ namespace Clustering {
     const Cluster operator-(const Cluster &lhs, const PointPtr &rhs) {
         return Cluster();
     }
-}
+
+    std::ostream &operator<<(std::ostream &os, const Cluster &c1) {
+        LNodePtr n = c1.points;
+        os << *(n->p) << " ";
+        while (n->next) {
+            n = n->next;
+            os << *(n->p) << " ";
+        }
+        os << std::endl;
+    }
+
+    std::istream &operator>>(std::istream &istream, Cluster &c1) {
+
+        fstream csv("CSV.txt", ios::in);
+        string line;
+        PointPtr ptr;
+
+        if (csv.is_open()) {
+
+            while (getline(csv, line)) {
+
+                cout << "Line: " << line << endl;
+                std::stringstream lineStream(line);
+                string value;
+                double d;
+                int dim=0;
+                int i = 0;
+                for (int j = 0; j < line.size(); ++j) {
+                    if(line[j]==','){
+                        dim++;
+                    }
+
+                }
+                PointPtr ptr=new Clustering::Point(dim+1);
+
+                while (getline(lineStream, value,',')) {
+                    d = stod(value);
+
+                    ptr->setValue(i,d);
+                    i++;
+                }
+
+                c1.add(ptr);
+
+//                PointPtr ptr=new Point(5);
+//                cin>>*ptr;
+//                cout <<*ptr<<endl;oint: " << *p << endl;
+
+            }
+        }
+        csv.close();
+        cout << c1;
+        return istream;
+    }}
