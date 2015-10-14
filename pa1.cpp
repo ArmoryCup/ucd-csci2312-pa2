@@ -26,33 +26,30 @@ void addPtr(int size, Cluster &c, PointPtr p) {
 int main(void) {
 
 
-Cluster c1;
-    cin>>c1;
+    Cluster line;
 
-
-//    fstream csv("CSV.txt", ios::in);
+    fstream csv("CSV.txt", ios::in);
 //    string line;
-//    if (csv.is_open()) {
-//
+    if (csv.is_open()) {
+            csv>>line;
 //        while (getline(csv,line)) {
-//
-//            cout << "Line: " << line << endl;
+
+
+//        cout << "Line: " << *line << endl;
 //            stringstream lineStream(line);
 //            string value;
 //            double d;
-//            double arr[5];
 //
 //            int i = 0;
 //            while (getline(lineStream, value, ',')) {
 //                d = stod(value);
-//                arr[i] = d;
-//                cout << "Value: " << arr[i] << endl;
+//                cout << "Value: " << d << endl;
 //                i++;
-//
+
 //            }
-//        }
-//    }
-//    csv.close();
+    }
+    csv.close();
+    cout << line;
 
 //    const int dim = 2;
 //    double arr[dim] = {1, 1};

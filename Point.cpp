@@ -218,16 +218,30 @@ namespace Clustering {
 
         os << "(" << point.values[0];
         for (int i = 1; i < point.dim; i++) {
-            os << Point::POINT_VALUE_DELIM << point.values[i];
+            os << Point::POINT_VALUE_DELIM << " " << point.values[i];
         }
         os << ")";
 
     }
 
     std::istream &operator>>(std::istream &istream, Point &point) {
-        for (int i = 0; i < point.dim; ++i) {
-            istream >> point.values[i];
+        std::string line;
+        int i = 0;
+        while (getline(istream,line,',')) {
+            double d;
+            d = std::stod(line);
+            point.setValue(i,d);
+            i++;
         }
         return istream;
     }
+
+
+
+
+
+
+
+
+
 }

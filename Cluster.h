@@ -18,7 +18,6 @@ namespace Clustering {
         LNodePtr points;                    // node pointer to points to the points of the linked list
         int m_size;
         static unsigned int __idGenerator;  // for use with __id
-        bool __release_points;
         PointPtr __centroid;
 
     public:

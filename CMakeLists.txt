@@ -8,6 +8,6 @@ set(SOURCE_FILES
     Cluster.h
     pa1.cpp
     Point.cpp
-    Point.h)
+    Point.h KMeans.cpp KMeans.h)
 
 add_executable(ucd_csci2312_pa2 ${SOURCE_FILES})

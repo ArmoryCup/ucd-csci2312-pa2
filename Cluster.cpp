@@ -339,18 +339,6 @@ namespace Clustering {
             }
             rhsCurr = rhsCurr->next;
         }
-
-//        while (lhsCurr) {
-//            rhsCurr = rhs.points;
-//            while (rhsCurr) {
-//                if (lhsCurr->p == rhsCurr->p) {
-//                    intersect.add(rhsCurr->p);
-//                }
-//                    rhsCurr = rhsCurr->next;
-//            }
-//            lhsCurr = lhsCurr->next;
-//        }
-
         if (intersect.points == NULL)
             cout << "Intersection is empty.\n";
         else
@@ -404,54 +392,34 @@ namespace Clustering {
 
     std::ostream &operator<<(std::ostream &os, const Cluster &c1) {
         LNodePtr n = c1.points;
-        os << *(n->p) << " ";
+        os << *(n->p) << "\n";
         while (n->next) {
             n = n->next;
-            os << *(n->p) << " ";
+            os << *(n->p) << "\n";
         }
         os << std::endl;
     }
 
     std::istream &operator>>(std::istream &istream, Cluster &c1) {
+        PointPtr newPoint;
+        std::string line;
+        int dimension;  // to hold a number of dimensions for a point
+        char delim = Clustering::Point::POINT_VALUE_DELIM;      // Point delimeter
+        while (getline(istream, line)) {
+            dimension = 0;
 
-        fstream csv("CSV.txt", ios::in);
-        string line;
-        PointPtr ptr;
-
-        if (csv.is_open()) {
-
-            while (getline(csv, line)) {
-
-                cout << "Line: " << line << endl;
-                std::stringstream lineStream(line);
-                string value;
-                double d;
-                int dim=0;
-                int i = 0;
-                for (int j = 0; j < line.size(); ++j) {
-                    if(line[j]==','){
-                        dim++;
-                    }
-
+            // count point delimeter in the line
+            for (int i = 0; i < line.size(); ++i) {
+                if (line[i] == delim) {
+                    dimension++;
                 }
-                PointPtr ptr=new Clustering::Point(dim+1);
-
-                while (getline(lineStream, value,',')) {
-                    d = stod(value);
-
-                    ptr->setValue(i,d);
-                    i++;
-                }
-
-                c1.add(ptr);
-
-//                PointPtr ptr=new Point(5);
-//                cin>>*ptr;
-//                cout <<*ptr<<endl;oint: " << *p << endl;
-
             }
+
+            stringstream lineStream(line);
+            newPoint = new Point(dimension + 1);
+            lineStream >> *newPoint;
+            c1.add(newPoint);
         }
-        csv.close();
-        cout << c1;
         return istream;
-    }}
+    }
+}
