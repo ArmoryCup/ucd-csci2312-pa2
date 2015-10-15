@@ -14,22 +14,41 @@ namespace Clustering {
     };
 
     class Cluster {
-
         LNodePtr points;                    // node pointer to points to the points of the linked list
         int m_size;
+        int m_PointDimension;                 // number of dimensions of the point in the Cluster
+
         static unsigned int __idGenerator;  // for use with __id
         PointPtr __centroid;
+        unsigned int __id;
+
+        static const char POINT_CLUSTER_ID_DELIM = ':';       // for use with operator<<
 
     public:
-        static const char POINT_CLUSTER_ID_DELIM = ':';       // for use with operator<<
-        int getM_size() const {
-            return m_size;
+        const Point *get__centroid() const {
+            return __centroid;
         }
 
         Cluster() : m_size(0), points(nullptr) { } // default ctor
         Cluster(const Cluster &); // copy ctor
         Cluster &operator=(const Cluster &); // assignment operator
         ~Cluster(); // dtor
+
+        int getPointDimension() const {
+            return Cluster::m_PointDimension;
+        }
+
+        void setPointDimension(int dim) {
+            m_PointDimension = dim;
+        }
+
+        void setCentroid(const Point &);
+        void computeCentroid();
+
+        int getM_size() const {
+            return m_size;
+        }
+
 
         void add(const PointPtr &); // add a point
         const PointPtr &remove(const PointPtr &); // remove a point and return it so we can add it to another cluster

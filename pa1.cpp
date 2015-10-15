@@ -2,6 +2,7 @@
 #include <string>
 #include "Point.h"
 #include "Cluster.h"
+#include "KMeans.h"
 #include <fstream>
 #include <sstream>
 
@@ -26,30 +27,19 @@ void addPtr(int size, Cluster &c, PointPtr p) {
 int main(void) {
 
 
-    Cluster line;
+    Cluster cluster;
+    KMeans m;
 
     fstream csv("CSV.txt", ios::in);
-//    string line;
     if (csv.is_open()) {
-            csv>>line;
-//        while (getline(csv,line)) {
-
-
-//        cout << "Line: " << *line << endl;
-//            stringstream lineStream(line);
-//            string value;
-//            double d;
-//
-//            int i = 0;
-//            while (getline(lineStream, value, ',')) {
-//                d = stod(value);
-//                cout << "Value: " << d << endl;
-//                i++;
-
-//            }
+//        csv >> cluster;
+        csv >> m;
     }
     csv.close();
-    cout << line;
+    cout << *m.getM_cluster() << endl;
+//    cout << cluster;
+//    cout << "Size: " << cluster.getM_size()<<endl;
+//    cluster.computeCentroid();
 
 //    const int dim = 2;
 //    double arr[dim] = {1, 1};
@@ -65,10 +55,12 @@ int main(void) {
 //    PointPtr p5 = new Point(dim, arr5);
 //    PointPtr p6 = new Point(dim, arr6), p7 = new Point(dim, arr7);
 
-//    double a[dim] = {1, 1};
-//    double b[dim] = {3, 3};
-//    Point p(dim, a);
-//    Point pp(dim, b);
+//    double a[2] = {1, 1};
+//    double b[2] = {3, 3};
+//    Point p(2, a);
+//    Point pp(2, b);
+
+
 //
 //    Cluster c1;
 //    c1.add(p1);

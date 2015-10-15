@@ -1,9 +1,9 @@
 #include <cmath>
-#include "Point.h"
+#include <iomanip>
 #include <cassert>
-#include <iostream>
 #include <fstream>
-
+#include <iostream>
+#include "Point.h"
 namespace Clustering {
 
     Point::Point(const int dims) {
@@ -134,12 +134,14 @@ namespace Clustering {
     }
 
     const Point Point::operator*(double d) const {
-        Point temp = *this;
-        for (int i = 0; i < temp.getDims(); ++i) {
+        double t;
+        int dim = getDims();
+        for (int i = 0; i < dim; ++i) {
 
-            temp.values[i] = values[i] * d;
+           t = values[i]*d;
+            values[i] = t;
         }
-        return temp;
+        return *this;
     }
 
     const Point Point::operator/(double d) const {
@@ -147,9 +149,10 @@ namespace Clustering {
             std::cout << "Error! You can not divide by zero\n";
             return *this;
         }
+        double t;
         for (int i = 0; i < dim; ++i) {
-            assert(!values[i] == 0);
-            values[i] / d;
+            t = values[i]/d;
+           values[i] = t;
         }
         return *this;
     }
@@ -216,11 +219,11 @@ namespace Clustering {
 
     std::ostream &operator<<(std::ostream &os, const Point &point) {
 
-        os << "(" << point.values[0];
+        os << point.values[0];
         for (int i = 1; i < point.dim; i++) {
-            os << Point::POINT_VALUE_DELIM << " " << point.values[i];
+            os << std::fixed << std::setprecision(1) << Point::POINT_VALUE_DELIM << " " << point.values[i];
         }
-        os << ")";
+        os << "";
 
     }
 

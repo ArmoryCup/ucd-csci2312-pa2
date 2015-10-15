@@ -155,6 +155,7 @@ namespace Clustering {
         return pDel;
     }
 
+
     const Cluster operator+(const Cluster &lhs, const Cluster &rhs) {
 
         Cluster newCluster = lhs;
@@ -408,18 +409,35 @@ namespace Clustering {
         while (getline(istream, line)) {
             dimension = 0;
 
-            // count point delimeter in the line
+            // get point's dimenstion by counting the delimeter in the line
             for (int i = 0; i < line.size(); ++i) {
                 if (line[i] == delim) {
                     dimension++;
                 }
             }
 
+
             stringstream lineStream(line);
             newPoint = new Point(dimension + 1);
             lineStream >> *newPoint;
+            c1.setPointDimension(dimension);
             c1.add(newPoint);
         }
         return istream;
+    }
+
+    void Cluster::setCentroid(const Point &point) {
+
+
+    }
+
+    void Cluster::computeCentroid() {
+        int dim = this->getPointDimension();
+        __centroid = new Point(dim);
+        for (LNodePtr curr = points; curr != NULL; curr = curr->next) {
+            *__centroid+=*curr->p;
+        }
+         *(__centroid)/static_cast<double>(m_size);
+        cout << "Centroid " << *__centroid << endl;
     }
 }
