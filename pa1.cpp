@@ -1,28 +1,11 @@
 #include <iostream>
-#include <string>
 #include "Point.h"
 #include "Cluster.h"
 #include "KMeans.h"
 #include <fstream>
-#include <sstream>
-
 using namespace std;
 
 using namespace Clustering;
-
-double *generateRand(int numbPtr) {
-    double *arr = new double[numbPtr];
-    for (int i = 0; i < numbPtr; ++i) {
-        arr[i] = rand() % 10;
-    }
-    return arr;
-}
-
-void addPtr(int size, Cluster &c, PointPtr p) {
-    for (int i = 0; i < size; ++i) {
-        c.add(p);
-    }
-}
 
 int main(void) {
 
@@ -37,6 +20,19 @@ int main(void) {
     }
     csv.close();
     cout << *m.getM_cluster() << endl;
+
+
+
+
+
+
+
+
+
+
+
+
+
 //    cout << cluster;
 //    cout << "Size: " << cluster.getM_size()<<endl;
 //    cluster.computeCentroid();
