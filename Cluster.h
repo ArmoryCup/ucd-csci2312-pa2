@@ -17,6 +17,7 @@ namespace Clustering {
         LNodePtr points;                    // node pointer to points to the points of the linked list
         int m_size;
         int m_PointDimension;                 // number of dimensions of the point in the Cluster
+        bool validCentroid;                   // validate a centroid
 
         static unsigned int __idGenerator;  // for use with __id
         PointPtr __centroid;
@@ -25,14 +26,37 @@ namespace Clustering {
         static const char POINT_CLUSTER_ID_DELIM = ':';       // for use with operator<<
 
     public:
-        const Point *get__centroid() const {
-            return __centroid;
-        }
+        Point get__centroid() const;
 
         Cluster() : m_size(0), points(nullptr) { } // default ctor
         Cluster(const Cluster &); // copy ctor
         Cluster &operator=(const Cluster &); // assignment operator
         ~Cluster(); // dtor
+
+
+        class Move{
+            PointPtr m_ptr;
+            Cluster *m_from, *m_to;
+
+            Move(PointPtr &ptr, Cluster *from, Cluster *to):m_ptr(ptr), m_from(from), m_to(to){}
+
+            void perform(){
+                m_to->add(m_from->remove(m_ptr));
+                m_from->validCentroid = false;
+                m_to->validCentroid = false;
+
+            }
+
+        };
+
+        void pickPoints(int k, Cluster* &c, PointPtr *pointArray);
+
+
+        // Getters and Setters
+
+        LNodePtr getPoints() const{
+            return points;
+        }
 
         int getPointDimension() const {
             return Cluster::m_PointDimension;

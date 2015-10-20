@@ -174,14 +174,16 @@ namespace Clustering {
     }
 
     bool operator==(const Point &point, const Point &point1) {
+        bool equal = false;
         for (int i = 0; i < point.dim; ++i) {
             if (point.values[i] == point1.values[i]) {
-                return true;
-            } else {
-                return false;
+                equal = true;
+            }else{
+                equal =  false;
+                break;
             }
         }
-
+        return equal;
     }
 
     bool operator!=(const Point &point, const Point &point1) {
@@ -218,6 +220,11 @@ namespace Clustering {
     }
 
     std::ostream &operator<<(std::ostream &os, const Point &point) {
+
+//        if(point== NULL){
+//            std::cout << "ERROR! Point is empty\n";
+//        }
+
 
         os << point.values[0];
         for (int i = 1; i < point.dim; i++) {

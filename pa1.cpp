@@ -2,7 +2,7 @@
 #include "Point.h"
 #include "Cluster.h"
 #include "KMeans.h"
-#include <fstream>
+
 using namespace std;
 
 using namespace Clustering;
@@ -10,16 +10,11 @@ using namespace Clustering;
 int main(void) {
 
 
-    Cluster cluster;
-    KMeans m;
 
-    fstream csv("CSV.txt", ios::in);
-    if (csv.is_open()) {
-//        csv >> cluster;
-        csv >> m;
-    }
-    csv.close();
-    cout << *m.getM_cluster() << endl;
+    KMeans m(2);
+
+
+
 
 
 

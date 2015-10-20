@@ -10,19 +10,23 @@
 namespace Clustering {
     class KMeans {
 
-        Cluster *m_cluster;
+        Cluster point_space;
+        PointPtr points;
+
+        static double SCORE_DIFF_THRESHOLD;
 
     public:
-        KMeans():m_cluster(){}
-        friend std::istream &operator>>(std::istream &os, KMeans &kMeans);
+        KMeans():point_space(){}
+        KMeans(int k);
 
+        double computeClusteringScore();
 
-        Cluster *getM_cluster() const {
-            return m_cluster;
+        Cluster getM_cluster() const {
+            return point_space;
         }
 
-        void setM_cluster(Cluster *m_cluster) {
-            KMeans::m_cluster = m_cluster;
+        void setM_cluster(Cluster m_cluster) {
+            KMeans::point_space = m_cluster;
         }
     };
 }

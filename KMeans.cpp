@@ -7,31 +7,29 @@
 #include <sstream>
 #include "KMeans.h"
 #include "Cluster.h"
+using namespace std;
 namespace Clustering{
 
-
-    std::istream &operator>>(std::istream &istream, Clustering::KMeans &kMeans) {
-        Cluster *c = new Clustering::Cluster();
-        PointPtr newPoint;
-        std::string line;
-        int dimension;  // to hold a number of dimensions for a point
-        char delim = Clustering::Point::POINT_VALUE_DELIM;      // Point delimeter
-        while (getline(istream, line)) {
-            dimension = 0;
-
-            // count point delimeter in the line
-            for (int i = 0; i < line.size(); ++i) {
-                if (line[i] == delim) {
-                    dimension++;
-                }
-            }
-
-            std::stringstream lineStream(line);
-            newPoint = new Point(dimension + 1);
-            lineStream >> *newPoint;
-            c->add(newPoint);
+    KMeans::KMeans(int k){
+        PointPtr cents[5];
+        fstream csv("CSV.txt", std::ios::in);
+        if (csv.is_open()) {
+            csv>> point_space;
         }
-        kMeans.m_cluster = c;
-        return istream;
+        csv.close();
+        Cluster c[k];
+        LNodePtr n = point_space.getPoints();
+        int i = 0;
+        for(LNodePtr curr = n; curr!= nullptr; curr = curr->next){
+            cents[i] = curr->p;
+            i++;
+        }
+                cout << point_space;
+        int numbOfPoints = point_space.getM_size();
+
+        for (int j = 0; j < k; ++j) {
+            point_space.pickPoints(4,c[j],cents);
+        }
     }
+
 }
