@@ -1,9 +1,9 @@
 #include "Cluster.h"
 #include <iostream>
-#include <cassert>
 #include <fstream>
 #include <sstream>
 #include "Point.h"
+#include <cstdlib>
 
 using namespace std;
 namespace Clustering {
@@ -425,35 +425,36 @@ namespace Clustering {
         }
         return istream;
     }
+
     Point Cluster::get__centroid() const {
         return *__centroid;
     }
+
     void Cluster::setCentroid(const Point &point) {
-            static Point p = point;
-        __centroid = &p;
+        static Point p = point;
+        this->__centroid = &p;
+
         validCentroid = true;
+
     }
 
     void Cluster::computeCentroid() {
         int dim = this->getPointDimension();
-        __centroid = new Point(dim);
+//        __centroid = new Point(dim);
         for (LNodePtr curr = points; curr != NULL; curr = curr->next) {
             *__centroid += *curr->p;
         }
         *(__centroid) / static_cast<double>(m_size);
-        cout << "Centroid " << *__centroid << endl;
+        cout << "Computed Centroid " << *__centroid << endl;
     }
 
 
-    void Cluster::pickPoints(int k, Cluster* &c, PointPtr *pointArray) {
+    void Cluster::pickPoints(int k, PointPtr *pointArray) {
+        // Get random point from pointArray
+        int randPoint = rand() % k;
 
-        int s = k/2;
-        int w = 0;
-        for (int i = 0; i < 4; ++i) {
-            w +=s;
-            c[i].setCentroid(*pointArray[w]);
-            cout << "w "<<s<<endl;
-            cout << "pickpoint "<<get__centroid()<<endl;
-        }
+//        setCentroid(*pointArray[randPoint]);
+        __centroid = pointArray[randPoint];
+        cout << "pickPoint " << get__centroid() << endl;
     }
 }

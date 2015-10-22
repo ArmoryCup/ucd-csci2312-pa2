@@ -33,7 +33,6 @@ namespace Clustering {
         Cluster &operator=(const Cluster &); // assignment operator
         ~Cluster(); // dtor
 
-
         class Move{
             PointPtr m_ptr;
             Cluster *m_from, *m_to;
@@ -49,11 +48,10 @@ namespace Clustering {
 
         };
 
-        void pickPoints(int k, Cluster* &c, PointPtr *pointArray);
+        void pickPoints(int k, PointPtr *pointArray);
 
 
         // Getters and Setters
-
         LNodePtr getPoints() const{
             return points;
         }

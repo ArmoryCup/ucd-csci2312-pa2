@@ -8,10 +8,8 @@ using namespace std;
 using namespace Clustering;
 
 int main(void) {
-
-
-
     KMeans m(2);
+
 
 
 
@@ -50,7 +48,9 @@ int main(void) {
 //    double b[2] = {3, 3};
 //    Point p(2, a);
 //    Point pp(2, b);
-
+//
+//    Point t = p-pp;
+//    cout << t<<endl;
 
 //
 //    Cluster c1;
