@@ -150,8 +150,7 @@ namespace Clustering {
             } else
                 currNode = currNode->next;
         }
-        cout << "Error! Point is not found.\n";
-        pDel = NULL;
+        
         return pDel;
     }
 
