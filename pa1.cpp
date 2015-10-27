@@ -2,16 +2,12 @@
 #include "Point.h"
 #include "Cluster.h"
 #include "KMeans.h"
-<<<<<<< HEAD
 #include <fstream>
-=======
->>>>>>> origin/master
 
 using namespace std;
 
 using namespace Clustering;
 
-<<<<<<< HEAD
 void randP(int num, int dim) {
     double ran = rand() % 10;
     fstream out("t.csv", std::ios::out);
@@ -41,14 +37,6 @@ int main(void) {
 
 //    randP(20,2);
 
-=======
-int main(void) {
-    KMeans m(2);
-
-
-
-
->>>>>>> origin/master
 
 
 
@@ -90,9 +78,7 @@ int main(void) {
 //    double b[2] = {3, 3};
 //    Point p(2, a);
 //    Point pp(2, b);
-//
-//    Point t = p-pp;
-//    cout << t<<endl;
+
 
 //
 //    Cluster c1;
