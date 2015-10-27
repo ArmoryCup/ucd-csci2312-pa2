@@ -9,6 +9,23 @@
 
 namespace Clustering {
     class KMeans {
+<<<<<<< HEAD
+        int dim;
+        Cluster point_space;
+        Cluster *c;
+        int __k;
+
+    public:
+        const double SCORE_DIFF_THRESHOLD = 100;
+        KMeans(int k);
+
+        void pickPoints(int k, PointPtr *pointArray);
+
+        Cluster getM_cluster() const {
+            return point_space;
+        }
+
+=======
 
         Cluster point_space;
         PointPtr points;
@@ -25,9 +42,14 @@ namespace Clustering {
         Cluster getM_cluster() const {
             return point_space;
         }
+>>>>>>> origin/master
         void setM_cluster(Cluster m_cluster) {
             KMeans::point_space = m_cluster;
         }
+
+        void loadPoints();
+        void movePonts(PointPtr cents);
+        void displayResult();
     };
 }
 

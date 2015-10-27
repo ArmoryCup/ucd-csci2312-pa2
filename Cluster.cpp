@@ -8,11 +8,16 @@
 using namespace std;
 namespace Clustering {
 
-    Cluster::Cluster(const Cluster &rhs) {
-        m_size = rhs.m_size;
-        LNodePtr newNode;                // to point to the new node
-        LNodePtr curr = NULL;         // to move thorugh the lsit
+    unsigned int Cluster::idGenerator = 1;
+    Cluster::Cluster(): m_PointDimension(0), __centroid(0), m_size(0), points(nullptr){
 
+    }
+
+    Cluster::Cluster(const Cluster &rhs):__centroid(rhs.__centroid) {
+        m_size = rhs.m_size;
+        LNodePtr newNode;                    // to point to the new node
+        LNodePtr curr = NULL;         // to move thorugh the lsit
+        Point p(2);
         LNodePtr copy = rhs.points;
         this->points = NULL;
         while (copy) {
@@ -45,11 +50,14 @@ namespace Clustering {
         if (!points) {
             points = newNode;
         } else {
-            curr = points;
-            while (curr->next) {
-                curr = curr->next;
-            }
-            curr->next = newNode;
+//            curr = points;
+//            while (curr->next) {
+//                curr = curr->next;
+//            }
+//            curr->next = newNode;
+
+            newNode->next = points;
+            points = newNode;
         }
         this->m_size++;
 
@@ -105,7 +113,6 @@ namespace Clustering {
             }
             return *this;
         }
-        __idGenerator++;
     }
 
 
@@ -150,7 +157,10 @@ namespace Clustering {
             } else
                 currNode = currNode->next;
         }
+<<<<<<< HEAD
+=======
         
+>>>>>>> origin/master
         return pDel;
     }
 
@@ -391,13 +401,14 @@ namespace Clustering {
     }
 
     std::ostream &operator<<(std::ostream &os, const Cluster &c1) {
+
         LNodePtr n = c1.points;
-        os << *(n->p) << "\n";
+        os << *(n->p) << " " << Cluster::POINT_CLUSTER_ID_DELIM << " " << Cluster::idGenerator << "\n";
         while (n->next) {
             n = n->next;
-            os << *(n->p) << "\n";
+            os << *(n->p) << " " << Cluster::POINT_CLUSTER_ID_DELIM << " " << Cluster::idGenerator  <<  "\n";
         }
-        os << std::endl;
+//        os << std::endl;
     }
 
     std::istream &operator>>(std::istream &istream, Cluster &c1) {
@@ -415,28 +426,66 @@ namespace Clustering {
                 }
             }
 
-
             stringstream lineStream(line);
             newPoint = new Point(dimension + 1);
             lineStream >> *newPoint;
-            c1.setPointDimension(dimension);
+            c1.setPointDimension(dimension+1);
             c1.add(newPoint);
         }
         return istream;
     }
 
+<<<<<<< HEAD
+    void Cluster::computeCentroid() {
+        int dim = m_PointDimension;
+        Point  ptr(dim);
+        for (LNodePtr curr = points; curr != NULL; curr = curr->next) {
+            ptr+= *curr->p;
+        }
+        (ptr) / static_cast<double>(m_size);
+        __centroid.set(ptr);
+        __centroid.setValid(true);
+//        cout << "\nComputeCentroid " << get__centroid() << endl;
+    }
+
+    LNodePtr Cluster::getPoints() const {
+        return points;
+    }
+
+    Point Cluster::get__centroid() const {
+        return __centroid.get();
+=======
     Point Cluster::get__centroid() const {
         return *__centroid;
+>>>>>>> origin/master
     }
 
     void Cluster::setCentroid(const Point &point) {
         static Point p = point;
         this->__centroid = &p;
 
+<<<<<<< HEAD
+        __centroid.set(point);
+        __centroid.setValid(true);
+    }
+=======
         validCentroid = true;
+>>>>>>> origin/master
+
+    void Cluster::pickPoints(int k, PointPtr *pointArray) {
+        int randPoint = rand() % k;
+        __centroid.set(*pointArray[randPoint]);
+    }
+
+<<<<<<< HEAD
+    static void generateID(){
+//        __idGenerator ++;
+//        unsigned int Cluster::__idGenerator = 1;
 
     }
 
+}
+=======
     void Cluster::computeCentroid() {
         int dim = this->getPointDimension();
 //        __centroid = new Point(dim);
@@ -457,3 +506,4 @@ namespace Clustering {
         cout << "pickPoint " << get__centroid() << endl;
     }
 }
+>>>>>>> origin/master

@@ -6,7 +6,7 @@
 #include "Point.h"
 namespace Clustering {
 
-    Point::Point(const int dims) {
+    Point::Point(int dims) {
         dim = dims;
 
         values = new double[dims];
@@ -159,7 +159,7 @@ namespace Clustering {
 
     Point &operator+=(Point &point, const Point &point1) {
 
-        for (int i = 0; i < point.dim; ++i) {
+        for (int i = 0; i < point1.dim; ++i) {
             point.values[i] += point1.values[i];
         }
 
@@ -174,6 +174,17 @@ namespace Clustering {
     }
 
     bool operator==(const Point &point, const Point &point1) {
+<<<<<<< HEAD
+        bool isEqual = false;
+        for (int i = 0; i < point.dim; ++i) {
+            if (point.values[i] == point1.values[i]) {
+                isEqual = true;
+            } else {
+                return false;
+            }
+        }
+        return isEqual;
+=======
         bool equal = false;
         for (int i = 0; i < point.dim; ++i) {
             if (point.values[i] == point1.values[i]) {
@@ -184,6 +195,7 @@ namespace Clustering {
             }
         }
         return equal;
+>>>>>>> origin/master
     }
 
     bool operator!=(const Point &point, const Point &point1) {
@@ -220,15 +232,19 @@ namespace Clustering {
     }
 
     std::ostream &operator<<(std::ostream &os, const Point &point) {
+<<<<<<< HEAD
+        os << std::fixed << std::setprecision(1);
+=======
 
 //        if(point== NULL){
 //            std::cout << "ERROR! Point is empty\n";
 //        }
 
 
+>>>>>>> origin/master
         os << point.values[0];
         for (int i = 1; i < point.dim; i++) {
-            os << std::fixed << std::setprecision(1) << Point::POINT_VALUE_DELIM << " " << point.values[i];
+            os <<  Point::POINT_VALUE_DELIM << " " << point.values[i];
         }
         os << "";
 

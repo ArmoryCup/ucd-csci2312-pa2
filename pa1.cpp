@@ -2,17 +2,53 @@
 #include "Point.h"
 #include "Cluster.h"
 #include "KMeans.h"
+<<<<<<< HEAD
+#include <fstream>
+=======
+>>>>>>> origin/master
 
 using namespace std;
 
 using namespace Clustering;
 
+<<<<<<< HEAD
+void randP(int num, int dim) {
+    double ran = rand() % 10;
+    fstream out("t.csv", std::ios::out);
+    for (int i = 0; i < num; ++i) {
+        out << ran;
+        for (int j = 1; j < dim; ++j) {
+            out << ",";
+            ran = rand() % 10;
+            out << ran;
+        }
+        out << endl;
+
+    }
+}
+
+void load(){
+    fstream fs("test.csv", ios::in);
+    Cluster cc;
+    if(fs.is_open()){
+        fs>>cc;
+    }
+    cout << cc;
+}
+int main(void) {
+    const int k = 3;
+    KMeans m(k);
+
+//    randP(20,2);
+
+=======
 int main(void) {
     KMeans m(2);
 
 
 
 
+>>>>>>> origin/master
 
 
 
@@ -30,15 +66,21 @@ int main(void) {
 //    cout << "Size: " << cluster.getM_size()<<endl;
 //    cluster.computeCentroid();
 
-//    const int dim = 2;
-//    double arr[dim] = {1, 1};
-//    double arr2[dim] = {2, 2};
+
 //    double arr3[dim] = {3, 3};
 //    double arr4[dim] = {4, 4};
 //    double arr5[dim] = {5.7, 5};
 //    double arr6[dim] = {6, 6}, arr7[dim] = {7, 2};
+
+//    const int dim = 2;
+//    double arr[dim] = {1, 1};
+//    double arr2[dim] = {2, 2};
 //    PointPtr p1 = new Point(dim, arr);
 //    PointPtr p2 = new Point(dim, arr2);
+//
+//    *p1+=*p2;
+//    cout <<*p1<<endl;
+
 //    PointPtr p3 = new Point(dim, arr3);
 //    PointPtr p4 = new Point(dim, arr4);
 //    PointPtr p5 = new Point(dim, arr5);

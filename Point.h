@@ -5,6 +5,8 @@
 #ifndef CLUSTERING_POINT_H
 #define CLUSTERING_POINT_H
 namespace Clustering {
+
+
     class Point {
         int dim;        // number of dimensions of the point
         double *values; // values of the point's dimensions
@@ -14,7 +16,8 @@ namespace Clustering {
 
         static const char POINT_VALUE_DELIM = ',';
 
-        Point(int);
+        Point(): dim(0), values(0){}
+        Point(int d);
         Point(int, double *);
 
         // Big three: cpy ctor, overloaded operator=, dtor
