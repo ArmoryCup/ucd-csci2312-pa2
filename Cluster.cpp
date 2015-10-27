@@ -1,5 +1,6 @@
 #include "Cluster.h"
 #include <iostream>
+#include <cassert>
 #include <fstream>
 #include <sstream>
 #include "Point.h"
@@ -157,10 +158,6 @@ namespace Clustering {
             } else
                 currNode = currNode->next;
         }
-<<<<<<< HEAD
-=======
-        
->>>>>>> origin/master
         return pDel;
     }
 
@@ -435,7 +432,6 @@ namespace Clustering {
         return istream;
     }
 
-<<<<<<< HEAD
     void Cluster::computeCentroid() {
         int dim = m_PointDimension;
         Point  ptr(dim);
@@ -454,30 +450,19 @@ namespace Clustering {
 
     Point Cluster::get__centroid() const {
         return __centroid.get();
-=======
-    Point Cluster::get__centroid() const {
-        return *__centroid;
->>>>>>> origin/master
     }
 
     void Cluster::setCentroid(const Point &point) {
-        static Point p = point;
-        this->__centroid = &p;
 
-<<<<<<< HEAD
         __centroid.set(point);
         __centroid.setValid(true);
     }
-=======
-        validCentroid = true;
->>>>>>> origin/master
 
     void Cluster::pickPoints(int k, PointPtr *pointArray) {
         int randPoint = rand() % k;
         __centroid.set(*pointArray[randPoint]);
     }
 
-<<<<<<< HEAD
     static void generateID(){
 //        __idGenerator ++;
 //        unsigned int Cluster::__idGenerator = 1;
@@ -485,25 +470,3 @@ namespace Clustering {
     }
 
 }
-=======
-    void Cluster::computeCentroid() {
-        int dim = this->getPointDimension();
-//        __centroid = new Point(dim);
-        for (LNodePtr curr = points; curr != NULL; curr = curr->next) {
-            *__centroid += *curr->p;
-        }
-        *(__centroid) / static_cast<double>(m_size);
-        cout << "Computed Centroid " << *__centroid << endl;
-    }
-
-
-    void Cluster::pickPoints(int k, PointPtr *pointArray) {
-        // Get random point from pointArray
-        int randPoint = rand() % k;
-
-//        setCentroid(*pointArray[randPoint]);
-        __centroid = pointArray[randPoint];
-        cout << "pickPoint " << get__centroid() << endl;
-    }
-}
->>>>>>> origin/master
