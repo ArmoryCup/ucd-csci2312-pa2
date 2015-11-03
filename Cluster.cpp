@@ -4,17 +4,17 @@
 #include <fstream>
 #include <sstream>
 #include "Point.h"
-#include <cstdlib>
 
 using namespace std;
 namespace Clustering {
 
     unsigned int Cluster::idGenerator = 1;
-    Cluster::Cluster(): m_PointDimension(0), __centroid(0), m_size(0), points(nullptr){
+
+    Cluster::Cluster() : m_PointDimension(0), __centroid(0), m_size(0), points(nullptr) {
 
     }
 
-    Cluster::Cluster(const Cluster &rhs):__centroid(rhs.__centroid) {
+    Cluster::Cluster(const Cluster &rhs) : __centroid(rhs.__centroid) {
         m_size = rhs.m_size;
         LNodePtr newNode;                    // to point to the new node
         LNodePtr curr = NULL;         // to move thorugh the lsit
@@ -403,7 +403,7 @@ namespace Clustering {
         os << *(n->p) << " " << Cluster::POINT_CLUSTER_ID_DELIM << " " << Cluster::idGenerator << "\n";
         while (n->next) {
             n = n->next;
-            os << *(n->p) << " " << Cluster::POINT_CLUSTER_ID_DELIM << " " << Cluster::idGenerator  <<  "\n";
+            os << *(n->p) << " " << Cluster::POINT_CLUSTER_ID_DELIM << " " << Cluster::idGenerator << "\n";
         }
 //        os << std::endl;
     }
@@ -423,10 +423,11 @@ namespace Clustering {
                 }
             }
 
+            int dim = c1.getPointDimension();
             stringstream lineStream(line);
             newPoint = new Point(dimension + 1);
             lineStream >> *newPoint;
-            c1.setPointDimension(dimension+1);
+            c1.setPointDimension(dimension + 1);
             c1.add(newPoint);
         }
         return istream;
@@ -434,9 +435,9 @@ namespace Clustering {
 
     void Cluster::computeCentroid() {
         int dim = m_PointDimension;
-        Point  ptr(dim);
+        Point ptr(dim);
         for (LNodePtr curr = points; curr != NULL; curr = curr->next) {
-            ptr+= *curr->p;
+            ptr += *curr->p;
         }
         (ptr) / static_cast<double>(m_size);
         __centroid.set(ptr);
@@ -459,14 +460,80 @@ namespace Clustering {
     }
 
     void Cluster::pickPoints(int k, PointPtr *pointArray) {
-        int randPoint = rand() % k;
-        __centroid.set(*pointArray[randPoint]);
+        LNodePtr curr = points;
+        int temp1 = m_size / k;
+        int dist = 1;
+
+        for (int i = 0; i < k; ++i) {
+            for (int j = 1; j < dist; ++j) {
+                curr = curr->next;
+            }
+            pointArray[i] = curr->p;
+            dist += temp1;
+
+
+        }
     }
 
-    static void generateID(){
+    static void generateID() {
 //        __idGenerator ++;
 //        unsigned int Cluster::__idGenerator = 1;
 
     }
 
+    double Cluster::intraClusterDistance() const {
+        int distance = 0;
+        double sum = 0;
+        int e = 0;
+
+        LNodePtr curr1 = points, curr2 = curr1->next;
+
+        while (curr1) {
+            while (curr2) {
+
+                sum += curr1->p->distanceTo(*curr2->p);
+                cout << e << ") <- intraClusterDistance: " << sum << endl;
+                e++;
+                curr2 = curr2->next;
+            }
+            curr1 = curr1->next;
+        }
+
+//        for (LNodePtr i = points; i != NULL; i = i->next) {
+//            for (LNodePtr j = points->next; j != NULL; j = j->next) {
+////                distance = i->p->distanceTo(*j->p);
+//                sum += i->p->distanceTo(*j->p);
+//
+//                cout << e << ") point[" << e << "] " << *points[e].p << "<- intraClusterDistance " << sum << endl;
+//                distance = 0;
+//                e++;
+//            }
+//
+//        }
+        return (sum / 2);
+    }
+
+    double interClusterDistance(const Cluster &c1, const Cluster &c2) {
+        Cluster temp = c1 + c2;
+        double sum = 0;
+//        c1 + c2;
+        sum = temp.intraClusterDistance();
+
+        return sum;
+    }
+
+    int Cluster::getClusterEdges() {
+        return (m_size * (m_size - 1) / 2);
+    }
+
+    double interClusterEdges(const Cluster &c1, const Cluster &c2) {
+
+        Cluster temp = c1 + c2;
+        int numEdge = (temp.m_size * (temp.m_size - 1) / 2);
+        return numEdge;
+    }
+
+    bool Cluster::isCentroidValid() const {
+        return __centroid.getValid();
+    }
 }

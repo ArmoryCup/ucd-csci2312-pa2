@@ -16,7 +16,6 @@ namespace Clustering {
 
         static const char POINT_VALUE_DELIM = ',';
 
-        Point(): dim(0), values(0){}
         Point(int d);
         Point(int, double *);
 

@@ -71,13 +71,9 @@ namespace Clustering {
             m_PointDimension = dim;
         }
 
-        bool isCentroidValid() const {
-            return __centroid.getValid();
-        }
+        bool isCentroidValid() const;
 
-        void setCentroidValid(bool b){
-            __centroid.setValid(b);
-        }
+        void setCentroidValid(bool b);
 
         void setCentroid(const Point &);
 
@@ -88,11 +84,15 @@ namespace Clustering {
         }
 
         static void generateID();
-
         void pickPoints(int k, PointPtr *pointArray);
 
-        void add(const PointPtr &);                 // add a point
+        double intraClusterDistance() const;
+        friend double interClusterDistance(const Cluster &c1, const Cluster &c2);
 
+        int getClusterEdges();
+        friend double interClusterEdges(const Cluster &c1, const Cluster &c2);
+
+        void add(const PointPtr &);                 // add a point
         const PointPtr &remove(const PointPtr &); // remove a point and return it
                                                   // so we can add it to another cluster
 
@@ -106,15 +106,10 @@ namespace Clustering {
         friend bool operator==(const Cluster &lhs, const Cluster &rhs);
 
         friend const Cluster operator+(const Cluster &lhs, const Cluster &rhs);
-
         friend const Cluster operator-(const Cluster &lhs, const Cluster &rhs);
-
         friend const Cluster operator+(const Cluster &lhs, const PointPtr &rhs);
-
         friend const Cluster operator-(const Cluster &lhs, const PointPtr &rhs);
-
         friend std::ostream &operator<<(std::ostream &os, const Clustering::Cluster &c1);
-
         friend std::istream &operator>>(std::istream &os, Clustering::Cluster &c1);
 
 
@@ -141,6 +136,10 @@ namespace Clustering {
             }
         };
     };
+
+//    void Cluster::setCentroidValid(bool b) {
+//        __centroid.setValid(b);
+//    }
 
 }
 #endif //PA2_CLUSTER_H

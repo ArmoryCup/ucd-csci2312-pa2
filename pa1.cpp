@@ -23,20 +23,27 @@ void randP(int num, int dim) {
     }
 }
 
-void load(){
-    fstream fs("test.csv", ios::in);
-    Cluster cc;
+void load(Cluster &cc){
+    fstream fs("t.csv", ios::in);
     if(fs.is_open()){
         fs>>cc;
     }
-    cout << cc;
+//    cout << cc;
 }
 int main(void) {
     const int k = 3;
+
     KMeans m(k);
+    m.loadPoints("test.csv");
+    m.start();
+//    m.loadPoints();
+//    Cluster cc;
+//    load(cc);
+//    cout <<cc;
+//    double sum = cc.intraClusterDistance();
+//    cout <<"SUM "<< sum;
 
-//    randP(20,2);
-
+//    randP(5,2);
 
 
 

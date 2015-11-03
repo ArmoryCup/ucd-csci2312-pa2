@@ -9,9 +9,7 @@
 
 namespace Clustering {
     class KMeans {
-        int dim;
-        Cluster point_space;
-        Cluster *c;
+        Cluster *point_space;
         int __k;
 
     public:
@@ -21,16 +19,20 @@ namespace Clustering {
         void pickPoints(int k, PointPtr *pointArray);
 
         Cluster getM_cluster() const {
-            return point_space;
+            return *point_space;
         }
 
         void setM_cluster(Cluster m_cluster) {
-            KMeans::point_space = m_cluster;
+            KMeans::point_space = &m_cluster;
         }
-
-        void loadPoints();
-        void movePonts(PointPtr cents);
+        void start();
+        void loadPoints(std::string);
+        void movePonts(PointPtr *);
         void displayResult();
+
+        void testPoint(PointPtr *);
+
+        double computeClusteringScore();
     };
 }
 
