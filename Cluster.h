@@ -8,6 +8,7 @@ namespace Clustering {
     typedef Point *PointPtr;
     typedef struct LNode *LNodePtr;
 
+
     struct LNode {
         PointPtr p;
         LNode *next;
@@ -38,7 +39,7 @@ namespace Clustering {
                 return isValid;
             }
 
-            void setValid(bool v){
+            void setValid(bool v) {
                 isValid = v;
             }
         };
@@ -57,9 +58,10 @@ namespace Clustering {
         ~Cluster(); // dtor
 
         Point get__centroid() const;
+
         LNodePtr getPoints() const;
 
-        const unsigned int getID() const{
+        const unsigned int getID() const {
             return idGenerator;
         }
 
@@ -83,18 +85,21 @@ namespace Clustering {
             return m_size;
         }
 
-        static void generateID();
+        void generateID(){ __id = idGenerator++; }
+
         void pickPoints(int k, PointPtr *pointArray);
 
         double intraClusterDistance() const;
+
         friend double interClusterDistance(const Cluster &c1, const Cluster &c2);
 
         int getClusterEdges();
+
         friend double interClusterEdges(const Cluster &c1, const Cluster &c2);
 
         void add(const PointPtr &);                 // add a point
         const PointPtr &remove(const PointPtr &); // remove a point and return it
-                                                  // so we can add it to another cluster
+        // so we can add it to another cluster
 
 
 
@@ -106,10 +111,15 @@ namespace Clustering {
         friend bool operator==(const Cluster &lhs, const Cluster &rhs);
 
         friend const Cluster operator+(const Cluster &lhs, const Cluster &rhs);
+
         friend const Cluster operator-(const Cluster &lhs, const Cluster &rhs);
+
         friend const Cluster operator+(const Cluster &lhs, const PointPtr &rhs);
+
         friend const Cluster operator-(const Cluster &lhs, const PointPtr &rhs);
+
         friend std::ostream &operator<<(std::ostream &os, const Clustering::Cluster &c1);
+
         friend std::istream &operator>>(std::istream &os, Clustering::Cluster &c1);
 
 
@@ -122,24 +132,20 @@ namespace Clustering {
 
     public:
         static const char POINT_CLUSTER_ID_DELIM = ':';
+
         class Move {
-        private:
-            Cluster *_from, *_to;
-            PointPtr _ptr;
-        public:
-            Move(PointPtr &ptr, Cluster *from, Cluster *to) : _ptr(ptr), _from(from), _to(to) { }
+            private:
+                Cluster *_from, *_to;
+                PointPtr _ptr;
+            public:
+                Move(PointPtr &ptr, Cluster *from, Cluster *to) : _ptr(ptr), _from(from), _to(to) { }
 
-            void perform() {
-                _to->add(_from->remove(_ptr));
-                _to->isValid = false;
-                _from->isValid = false;
-            }
-        };
+                void perform() {
+                    _to->add(_from->remove(_ptr));
+                    _to->setCentroidValid(false);
+                    _from->setCentroidValid(false);
+                }
+            };
     };
-
-//    void Cluster::setCentroidValid(bool b) {
-//        __centroid.setValid(b);
-//    }
-
 }
 #endif //PA2_CLUSTER_H

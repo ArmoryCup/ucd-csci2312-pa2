@@ -11,7 +11,7 @@ namespace Clustering {
     unsigned int Cluster::idGenerator = 1;
 
     Cluster::Cluster() : m_PointDimension(0), __centroid(0), m_size(0), points(nullptr) {
-
+        generateID();
     }
 
     Cluster::Cluster(const Cluster &rhs) : __centroid(rhs.__centroid) {
@@ -400,10 +400,10 @@ namespace Clustering {
     std::ostream &operator<<(std::ostream &os, const Cluster &c1) {
 
         LNodePtr n = c1.points;
-        os << *(n->p) << " " << Cluster::POINT_CLUSTER_ID_DELIM << " " << Cluster::idGenerator << "\n";
+        os << *(n->p) << " " << Cluster::POINT_CLUSTER_ID_DELIM << " " << c1.__id << "\n";
         while (n->next) {
             n = n->next;
-            os << *(n->p) << " " << Cluster::POINT_CLUSTER_ID_DELIM << " " << Cluster::idGenerator << "\n";
+            os << *(n->p) << " " << Cluster::POINT_CLUSTER_ID_DELIM << " " << c1.__id << "\n";
         }
 //        os << std::endl;
     }
@@ -475,16 +475,11 @@ namespace Clustering {
         }
     }
 
-    static void generateID() {
-//        __idGenerator ++;
-//        unsigned int Cluster::__idGenerator = 1;
-
-    }
-
     double Cluster::intraClusterDistance() const {
-        int distance = 0;
         double sum = 0;
-        int e = 0;
+
+        if (points == NULL)
+            return 0;
 
         LNodePtr curr1 = points, curr2 = curr1->next;
 
@@ -492,34 +487,20 @@ namespace Clustering {
             while (curr2) {
 
                 sum += curr1->p->distanceTo(*curr2->p);
-                cout << e << ") <- intraClusterDistance: " << sum << endl;
-                e++;
                 curr2 = curr2->next;
             }
             curr1 = curr1->next;
         }
 
-//        for (LNodePtr i = points; i != NULL; i = i->next) {
-//            for (LNodePtr j = points->next; j != NULL; j = j->next) {
-////                distance = i->p->distanceTo(*j->p);
-//                sum += i->p->distanceTo(*j->p);
-//
-//                cout << e << ") point[" << e << "] " << *points[e].p << "<- intraClusterDistance " << sum << endl;
-//                distance = 0;
-//                e++;
-//            }
-//
-//        }
         return (sum / 2);
     }
 
     double interClusterDistance(const Cluster &c1, const Cluster &c2) {
-        Cluster temp = c1 + c2;
-        double sum = 0;
-//        c1 + c2;
-        sum = temp.intraClusterDistance();
 
-        return sum;
+            Cluster temp = c1 + c2;
+            double sum = 0;
+            sum = temp.intraClusterDistance();
+            return sum;
     }
 
     int Cluster::getClusterEdges() {
@@ -535,5 +516,11 @@ namespace Clustering {
 
     bool Cluster::isCentroidValid() const {
         return __centroid.getValid();
+    }
+
+    void Cluster::setCentroidValid(bool b) {
+
+        this->__centroid.setValid(b);
+
     }
 }

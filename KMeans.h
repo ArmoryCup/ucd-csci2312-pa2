@@ -13,10 +13,10 @@ namespace Clustering {
         int __k;
 
     public:
-        const double SCORE_DIFF_THRESHOLD = 100;
+        const double SCORE_DIFF_THRESHOLD = 0.001;
         KMeans(int k);
 
-        void pickPoints(int k, PointPtr *pointArray);
+        void firstMove(PointPtr *);
 
         Cluster getM_cluster() const {
             return *point_space;
@@ -29,9 +29,6 @@ namespace Clustering {
         void loadPoints(std::string);
         void movePonts(PointPtr *);
         void displayResult();
-
-        void testPoint(PointPtr *);
-
         double computeClusteringScore();
     };
 }

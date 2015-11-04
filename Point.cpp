@@ -197,8 +197,7 @@ namespace Clustering {
 
     double Point::distanceTo(const Point &point) const {
 
-        double distance;
-        double d;
+        double distance = 0, d = 0;
         for (int i = 0; i < dim; ++i) {
             d += pow((point.getValue(i) - values[i]), 2);
         }

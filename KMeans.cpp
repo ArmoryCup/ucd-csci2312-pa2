@@ -4,6 +4,7 @@
 
 #include<iostream>
 #include <fstream>
+#include <cmath>
 #include <cstdlib>
 #include "KMeans.h"
 #include "Cluster.h"
@@ -16,6 +17,7 @@ namespace Clustering {
     KMeans::KMeans(int k) {
         __k = k;
         point_space = new Cluster[k];
+
     }
 
     void KMeans::loadPoints(string textFile) {
@@ -26,68 +28,93 @@ namespace Clustering {
         csv.close();
     }
 
-    void KMeans::displayResult() {
-        if (point_space[0].getPoints() == nullptr) {
-            cout << "Error! The function displayResult can not display anything. Clusters do not have points\n";
-        }
-        else {
-            for (int n = 0; n < __k; ++n) {
+    void KMeans::firstMove(PointPtr *point) {
+        const double MIN = 100;
+        int min = MIN;
+        double distance = 0;
+        int clusterEl, numbOfPoints = point_space[0].getM_size();
+        int numbOfClusters = __k;
 
-                cout << "\nc[" << n << "] has \n";
-                cout << point_space[n];
-                cout << "centroid: " << point_space[n].get__centroid() << endl;
+//        cout << "\t\t\t\t\tFIRST_MAIN LOOP\n";
+
+        PointPtr tmp = NULL;
+        int cl = 0;
+        for (int l = 0; l < numbOfPoints; ++l) {
+            min = MIN;
+            for (int i = 0; i < numbOfClusters; ++i) {
+
+                distance = point[l]->distanceTo(point_space[i].get__centroid());
+//                    cout << "point[" << l << "] --> " << *point[l] << "   dist(c[" << i << "]: " << distance <<
+//                    endl;
+                if (distance < min) {
+                    min = distance;
+                    clusterEl = i;
+                }
+            }
+
+            for (int j = 0; j < numbOfClusters; ++j) {
+                if (*point[l] == point_space[j].get__centroid()) {
+                    tmp = point[l];
+                    cl = j;
+                }
+            }
+
+//                cout << "\nc[" << clusterEl << "] nMin " << min << " <-- " << *point[l] << endl;
+//                cout << "point_space[" << clusterEl << "].centr <-- " << point_space[clusterEl].get__centroid() <<
+//                endl << endl;
+            if (point_space[cl].get__centroid() != *point[l] &&
+                point_space[cl].get__centroid() != point_space[0].get__centroid()) {
+                Cluster::Move move(point[l], &point_space[0], &point_space[clusterEl]);
+                move.perform();
+//                    cout << "point is moved successfull.\n\n";
             }
 
         }
+        displayResult();
     }
 
-    // temporary function
-    void KMeans::testPoint(PointPtr *point) {
-        int numbPoints = point_space[0].getM_size();
-        for (int l = 0; l < numbPoints; l++)
-            cout << "point[" << l << "] " << *point[l] << endl;
-    }
 
     void Clustering::KMeans::movePonts(PointPtr *point) {
-        double score, scoreDiff, distance = 0, min = SCORE_DIFF_THRESHOLD;
+        const double MIN = 100;
+        double score = 0, oldScore = 0, scoreDiff = 0, distance = 0, min = MIN;
         scoreDiff = SCORE_DIFF_THRESHOLD + 1;
-        double r = 0;
 
-        int clusterEl, pointEl, numbOfPoints = point_space[0].getM_size();
-        PointPtr currentPoint = nullptr;
+        int clusterEl, numbOfPoints = point_space[0].getM_size();
         int numbOfClusters = __k;
-//        while (scoreDiff > SCORE_DIFF_THRESHOLD) {
-            for (int j = 1; j < numbOfClusters; ++j) {
-                min = SCORE_DIFF_THRESHOLD;
-//            cout <<"c["<<j<<"].centroid " << point_space[j].get__centroid() << endl;
+
+
+        cout << "\t\t\t\t\tMAIN LOOP\n";
+        while (scoreDiff > SCORE_DIFF_THRESHOLD) {
+            oldScore = MIN;
+            cout << "OLDSCORE " << oldScore << endl << endl;
+
+            for (int j = 0; j < numbOfClusters; ++j) {
+                min = MIN;
+
+
                 for (int l = 0; l < numbOfPoints; ++l) {
-
-//                cout << "point["<<l<<"] "<< *point[l] << endl;
-                    distance = point[l]->distanceTo(point_space[j].get__centroid());
-                    cout << "point[" << l << "] --> " << *point[l] << "   dist(c[" << j << "]: " << distance << endl;
-
-
-                    if (distance < min) {
-                        min = distance;
-                        currentPoint = point[l];
-                        pointEl = l;
-                        clusterEl = j;
+                    min = MIN;
+                    for (int i = 0; i < numbOfClusters; ++i) {
+                        distance = point[l]->distanceTo(point_space[i].get__centroid());
+                        cout << "point[" << l << "] --> " << *point[l] << "   dist(c[" << i << "]: " << distance <<
+                        endl;
+                        if (distance < min) {
+                            min = distance;
+                            clusterEl = i;
+                        }
                     }
-                    if(min == 0)
-                        break;
+//                    cout <<"MIN "<<min<<endl;
+                    cout << "\nc[" << clusterEl << "] nMin " << min << " <-- " << *point[l] << endl;
+                    cout << "point_space[" << clusterEl << "].centr <-- " <<
+                    point_space[clusterEl].get__centroid() <<
+                    endl << endl;
+                    if (point_space[j].get__centroid() != *point[l]) {
+                        Cluster::Move move(point[l], &point_space[j], &point_space[clusterEl]);
+                        move.perform();
+                        cout << "point is moved successfull.\n";
+                    }
+
                 }
-                cout << "\nc[" << j << "] nMin " << min << " <-- " << *point[pointEl] << endl;
-                PointPtr ptr = point[pointEl];
-                if (point_space[j].get__centroid() != *ptr) {
-                    Cluster::Move move(ptr, &point_space[0], &point_space[clusterEl]);
-                    move.perform();
-                }
-
-//                cout << "AAAAAAc[0] \n" << point_space[0] << endl;
-//                cout << "AAAAAAcc[1] \n" << point_space[1] << endl;
-//                cout << "AAAAAAcc[2] \n" << point_space[2] << endl;
-
-
             }
 
             // compute and set centroid to valid
@@ -95,12 +122,19 @@ namespace Clustering {
             for (int i = 0; i < numbOfClusters; ++i) {
                 if (!point_space[i].isCentroidValid()) {
                     point_space[i].computeCentroid();
+                    cout << "NEW Centroid " << point_space[i].get__centroid() << endl;
                 }
             }
-                displayResult();
-//            score = computeClusteringScore();
-//            cout << "Score: " << score << endl;
-//        }
+
+            score = computeClusteringScore();
+            cout << "Score: " << score << endl;
+
+            oldScore = score;
+
+            scoreDiff = std::abs(score - oldScore);
+            cout << "ScoreDiff: " << scoreDiff << endl;
+
+        }
     }
 
     double KMeans::computeClusteringScore() {
@@ -111,12 +145,11 @@ namespace Clustering {
 
         int sum = 0;
 
-        cout <<"\nBegin\n";
+        cout << "\n computeClusteringScore  Begin\n";
 
         // calculate the sum of the inter-cluster distances
         // and the number of distinct (intra-) cluster edges
         for (int i = 0; i < __k; ++i) {
-            cout << "c[" << i << "]: " <<endl;
             d_In += point_space[i].intraClusterDistance();
             p_In += point_space[i].getClusterEdges();
         }
@@ -131,12 +164,12 @@ namespace Clustering {
         }
 
         betaCV = (d_In / p_In) / (d_Out / p_Out);
-
-        cout << "\nEnd\n";
+        cout << "BETA " << betaCV << endl;
+        cout << "\nEnd computeClusteringScore\n";
         return betaCV;
     }
 
-    void KMeans::start(){
+    void KMeans::start() {
         int numbOfPoints = point_space[0].getM_size();
         PointPtr initCentroid[__k];         // initial centroid for k cluster
 
@@ -153,22 +186,39 @@ namespace Clustering {
         // set initial centroids for k clusters
         point_space->pickPoints(__k, initCentroid);
         int dim = point_space[0].getPointDimension();
+
         for (int j = 0; j < __k; ++j) {
-//            cout << "Centroid " << *initCentroid[j] << endl;
-            point_space[j].setCentroid((*initCentroid[j]));
+            PointPtr p = point_space->remove(initCentroid[j]);
+//                point_space[j].setCentroid((*initCentroid[j]));
+            point_space[j].setCentroid(*p);
             point_space[j].setPointDimension(dim);
-            cout << "c[" << j << "].centroid: " << point_space[j].get__centroid() << endl;
+//            cout << "c[" << j << "].centroid: " << point_space[j].get__centroid() << endl;
         }
 
-        cout << "****************************************\n";
-
-//        for (int l = 0; l < numbOfPoints; ++l) {
-//            cout<< *points[l] << endl;
-//        }
-//            testPoint(points);
-        movePonts(points);
+        cout << "******************FIRSTmovePoint(points)**********************\n\n";
+        firstMove(points);
+//            cout << "******************movePoint(points)**********************\n\n";
+//
+//            movePonts(points);
         cout << "****************************************\n";
 
         cout << "BBBB";
+
+
+    }
+
+    void KMeans::displayResult() {
+        if (point_space[0].getPoints() == nullptr) {
+            cout << "Error! The function displayResult can not display anything. Clusters do not have points\n";
+        }
+        else {
+            for (int n = 0; n < __k; ++n) {
+
+                cout << "\nc[" << n << "] has \n";
+                cout << point_space[n];
+                cout << "centroid: " << point_space[n].get__centroid() << endl;
+            }
+
+        }
     }
 }
