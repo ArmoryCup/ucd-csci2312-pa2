@@ -18,7 +18,7 @@ namespace Clustering {
         m_size = rhs.m_size;
         LNodePtr newNode;                    // to point to the new node
         LNodePtr curr = NULL;         // to move thorugh the lsit
-        Point p(2);
+//        Point p(m_PointDimension);
         LNodePtr copy = rhs.points;
         this->points = NULL;
         while (copy) {
@@ -124,7 +124,9 @@ namespace Clustering {
             points = points->next;
 //            if (delNode->p != NULL)
 //                delete delNode->p;
+
             delete delNode;
+
         }
 //        cout << "Dereferencing\n";
     }
@@ -441,7 +443,7 @@ namespace Clustering {
         }
         (ptr) / static_cast<double>(m_size);
         __centroid.set(ptr);
-        __centroid.setValid(true);
+//        __centroid.setValid(true);
 //        cout << "\nComputeCentroid " << get__centroid() << endl;
     }
 
@@ -470,8 +472,6 @@ namespace Clustering {
             }
             pointArray[i] = curr->p;
             dist += temp1;
-
-
         }
     }
 
@@ -496,22 +496,31 @@ namespace Clustering {
     }
 
     double interClusterDistance(const Cluster &c1, const Cluster &c2) {
+        double sum = 0;
 
-            Cluster temp = c1 + c2;
-            double sum = 0;
-            sum = temp.intraClusterDistance();
-            return sum;
+        LNodePtr currC1 = c1.points, currC1n = currC1->next;
+        LNodePtr currC2 = c2.points, currC2n = currC2->next;
+
+        while (currC1) {
+            while (currC2) {
+                sum += currC1->p->distanceTo(*currC2->p);
+                currC2 = currC2->next;
+            }
+            currC2 = c2.points;
+            currC1 = currC1->next;
+        }
+        return (sum / 2);
     }
 
-    int Cluster::getClusterEdges() {
+    int Cluster::getClusterEdges() const {
         return (m_size * (m_size - 1) / 2);
     }
 
     double interClusterEdges(const Cluster &c1, const Cluster &c2) {
 
-        Cluster temp = c1 + c2;
-        int numEdge = (temp.m_size * (temp.m_size - 1) / 2);
-        return numEdge;
+        int size = c1.m_size + c2.m_size;
+        int numEdge = (size * (size - 1) / 2);
+        return size;
     }
 
     bool Cluster::isCentroidValid() const {

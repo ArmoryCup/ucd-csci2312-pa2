@@ -93,7 +93,7 @@ namespace Clustering {
 
         friend double interClusterDistance(const Cluster &c1, const Cluster &c2);
 
-        int getClusterEdges();
+        int getClusterEdges() const;
 
         friend double interClusterEdges(const Cluster &c1, const Cluster &c2);
 
