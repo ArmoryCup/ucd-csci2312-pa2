@@ -1,48 +1,53 @@
 #include <cmath>
+#include <vector>
 #include <iomanip>
 #include <cassert>
 #include <fstream>
 #include <iostream>
+#include "Exceptions.h"
 #include "Point.h"
+
+
 namespace Clustering {
 
-    Point::Point(int dims) {
-        dim = dims;
+    unsigned int Point::idGenerator = 1;
 
-        values = new double[dims];
+    Point::Point(unsigned int dims) {
+        dim = dims;
         for (size_t i = 0; i < dims; i++) {
-            values[i] = 0;
+            m_values.push_back(0);
         }
+
+        generatePoint_ID();
     }
 
-    Point::Point(int dims, double *arr) {
+
+    Point::Point(unsigned int dims, double *arr) {
         dim = dims;
-        values = new double[dims];
-        for (int i = 0; i < dims; i++) {
-            values[i] = arr[i];
+        for (int i = 0; i < dims; ++i) {
+            m_values.push_back(arr[i]);
         }
+        generatePoint_ID();
     }
+
 
     Point::Point(const Point &copy) {
-
         dim = copy.dim;
-        values = new double[dim];
-        for (int i = 0; i < dim; ++i) {
-            values[i] = copy.values[i];
-        }
+        __id = copy.__id;
+
+        for(auto it = copy.m_values.begin(); it != copy.m_values.end(); it++)
+            m_values.push_back(*it);
     }
 
 // Destructor
-// No dynamic allocation, so nothing to do; if omitted, generated automatically
     Point::~Point() {
-        if (values != nullptr) {
-            delete[] values;
-            values = NULL;
-        }
+        idGenerator--;
+        m_values.clear();
     }
 
-    double Point::getValue(int i) const {
-        return values[i];
+
+    double Point::getValue(unsigned int i) const {
+        return m_values[i];
     }
 
 // return the object on the left side of the = sign
@@ -50,31 +55,38 @@ namespace Clustering {
         if (this == &rightSide)
             return *this;
         else {
-            delete[] values;
+            // erase vector and then copy values from rhs
+            m_values.clear();
             dim = rightSide.dim;
-            values = new double[dim];
-            for (int i = 0; i < dim; ++i) {
-                values[i] = rightSide.values[i];
-            }
+            __id = rightSide.__id;
+
+            m_values= rightSide.m_values;
+
             return *this;
         }
     }
 
 
     bool operator<(const Point &p1, const Point &p2) {
+        if (p1.dim != p2.dim)
+            throw DimensionalityMismatchEx("Point <operator",p1.dim, p2.dim);
 
-        for (int i = 0; i < p1.dim; ++i) {
-            if (p1.values[i] < p2.values[i])
+
+        for (unsigned int i = 0; i < p1.dim; ++i) {
+            if (p1.m_values[i] < p2.m_values[i])
                 return true;
-            else if (p2.values[i] < p1.values[i])
+            else if (p2.m_values[i] < p1.m_values[i])
                 return false;
         }
         return false;
     }
 
     bool operator>(const Point &p1, const Point &p2) {
+        if (p1.dim != p2.dim)
+            throw DimensionalityMismatchEx("Point >operator", p1.dim, p2.dim);
+
         int iDim = p1.getDims();
-        for (int i = 0; i < iDim; ++i) {
+        for (unsigned int i = 0; i < iDim; ++i) {
             if (p1.getValue(i) > p2.getValue(i))
                 return true;
             else if (p2.getValue(i) > p1.getValue(i))
@@ -85,8 +97,11 @@ namespace Clustering {
 
 
     bool operator>=(const Point &p1, const Point &p2) {
+        if (p1.dim != p2.dim)
+            throw DimensionalityMismatchEx("Point >=operator", p1.dim, p2.dim);
+
         int size = p1.getDims();
-        for (int i = 0; i < size; ++i) {
+        for (unsigned int i = 0; i < size; ++i) {
             if (p1.getValue(i) >= p2.getValue(i))
                 return true;
             else
@@ -95,20 +110,24 @@ namespace Clustering {
     }
 
     const Point operator+(const Point &operand1, const Point &operand2) {
-        Point temp(operand1);
+        if (operand1.dim != operand2.dim)
+            throw DimensionalityMismatchEx("Point +operator", operand1.dim, operand2.dim);
 
-        for (int i = 0; i < temp.dim; ++i) {
-            temp.values[i] = operand1.values[i] + operand2.values[i];
+        Point temp(operand1);
+        for (unsigned int i = 0; i < temp.dim; ++i) {
+            temp.m_values[i] = operand1.m_values[i] + operand2.m_values[i];
         }
         return temp;
     }
 
-    const Point operator-(const Point &operand1, const Point &operand2) {
-        Point temp(operand1);
-//        operand1.~Point();
 
-        for (int i = 0; i < temp.dim; ++i) {
-            temp.values[i] = operand1.values[i] - operand2.values[i];
+    const Point operator-(const Point &operand1, const Point &operand2) {
+        if (operand1.getDims() != operand2.getDims())
+            throw DimensionalityMismatchEx("Point -operator", operand1.getDims(), operand2.getDims());
+
+        Point temp(operand1);
+        for (unsigned int i = 0; i < temp.getDims(); ++i) {
+            temp.m_values[i] = operand1.m_values[i] - operand2.m_values[i];
         }
         return temp;
     }
@@ -116,7 +135,8 @@ namespace Clustering {
 
     Point &Point::operator*=(const double d) {
         for (int i = 0; i < dim; ++i) {
-            values[i] *= d;
+            m_values[i] *= d;
+
         }
         return *this;
     }
@@ -126,57 +146,67 @@ namespace Clustering {
             std::cout << "Error, attempting to divide by zero.\n";
             return *this;
         }
-        for (int i = 0; i < dim; ++i) {
-            assert(!values[i] == 0);
-            values[i] /= d;
+        for (unsigned int i = 0; i < dim; ++i) {
+            assert(!m_values[i] == 0);
+            m_values[i] /= d;
         }
         return *this;
     }
 
-    const Point Point::operator*(double d) const {
-        double t;
+    const Point Point::operator*(double d)  {
+        double t = 0;
         int dim = getDims();
         for (int i = 0; i < dim; ++i) {
-
-           t = values[i]*d;
-            values[i] = t;
+            t = m_values[i] * d;
+            m_values[i] = t;
         }
         return *this;
     }
 
-    const Point Point::operator/(double d) const {
+    const Point Point::operator/(double d)  {
         if (d == 0) {
             std::cout << "Error! You can not divide by zero\n";
             return *this;
         }
         double t;
-        for (int i = 0; i < dim; ++i) {
-            t = values[i]/d;
-           values[i] = t;
+        for (unsigned int i = 0; i < dim; ++i) {
+            t = m_values[i] / d;
+            m_values[i] = t;
         }
         return *this;
     }
 
     Point &operator+=(Point &point, const Point &point1) {
+        if (point.dim != point1.dim)
+            throw DimensionalityMismatchEx("Point +=operator", point.dim, point1.dim);
 
-        for (int i = 0; i < point1.dim; ++i) {
-            point.values[i] += point1.values[i];
+
+        for (unsigned int i = 0; i < point1.dim; ++i) {
+            point.m_values[i] += point1.m_values[i];
         }
 
         return point;
     }
 
     Point &operator-=(Point &point, const Point &point1) {
+        if (point.dim != point1.dim)
+            throw DimensionalityMismatchEx("Point -=operator", point.dim, point1.dim);
+
         for (int i = 0; i < point.dim; ++i) {
-            point.values[i] -= point1.values[i];
+            point.m_values[i] -= point1.m_values[i];
         }
         return point;
     }
 
     bool operator==(const Point &point, const Point &point1) {
+        if (point.dim != point1.dim)
+            throw DimensionalityMismatchEx("Point ==operator", point.dim, point1.dim);
+
+
         bool isEqual = false;
-        for (int i = 0; i < point.dim; ++i) {
-            if (point.values[i] == point1.values[i]) {
+
+        for (unsigned int i = 0; i < point.dim; ++i) {
+            if (point.m_values[i] == point1.m_values[i] && point.__id == point1.__id) {
                 isEqual = true;
             } else {
                 return false;
@@ -186,30 +216,29 @@ namespace Clustering {
     }
 
     bool operator!=(const Point &point, const Point &point1) {
-        /*
-         * bool operator!=(Point &p1, Point &p2) {
-        return !(p1 == p2);
-    }
-         * */
-
+        if (point.dim != point1.dim)
+            throw DimensionalityMismatchEx("Point !=operator", point.dim, point1.dim);
         return !(point == point1);
     }
 
     double Point::distanceTo(const Point &point) const {
+        if (dim != point.dim)
+            throw DimensionalityMismatchEx("Point distanceTo", dim, point.dim);
 
         double distance = 0, d = 0;
-        for (int i = 0; i < dim; ++i) {
-            d += pow((point.getValue(i) - values[i]), 2);
+        for (unsigned int i = 0; i < dim; ++i) {
+            d += pow((point.m_values[i] - m_values[i]), 2);
         }
         distance = sqrt(d);
         return distance;
-        return 0;
     }
 
-
     bool operator<=(const Point &point, const Point &point1) {
+        if (point.dim != point1.dim)
+            throw DimensionalityMismatchEx("Point <=operator", point.dim, point1.dim);
+
         int size = point.getDims();
-        for (int i = 0; i < size; ++i) {
+        for (unsigned int i = 0; i < size; ++i) {
             if (point.getValue(i) <= point1.getValue(i))
                 return true;
             else if (point1.getValue(i) >= point.getValue(i))
@@ -219,32 +248,24 @@ namespace Clustering {
 
     std::ostream &operator<<(std::ostream &os, const Point &point) {
         os << std::fixed << std::setprecision(1);
-        os << point.values[0];
-        for (int i = 1; i < point.dim; i++) {
-            os <<  Point::POINT_VALUE_DELIM << " " << point.values[i];
+        os << point.m_values[0];
+        for (unsigned int j = 1; j < point.getDims(); ++j) {
+            os  << Point::POINT_VALUE_DELIM<< " " << point.m_values[j];
         }
         os << "";
-
     }
 
     std::istream &operator>>(std::istream &istream, Point &point) {
         std::string line;
         int i = 0;
-        while (getline(istream,line,',')) {
+        while (getline(istream, line, ',')) {
             double d;
             d = std::stod(line);
-            point.setValue(i,d);
+            point.setValue(i, d);
             i++;
         }
         return istream;
     }
-
-
-
-
-
-
-
 
 
 }

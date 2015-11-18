@@ -1,3 +1,7 @@
+#include <vector>
+#include <forward_list>
+#include <unordered_map>
+
 #include "Point.h"
 
 #ifndef PA2_CLUSTER_H
@@ -5,34 +9,23 @@
 
 namespace Clustering {
 
-    typedef Point *PointPtr;
-    typedef struct LNode *LNodePtr;
-
-
-    struct LNode {
-        PointPtr p;
-        LNode *next;
-    };
 
     class Cluster {
-
         class Centroid {                    // private inner/nested/member class
-            PointPtr __centroid;
+            Point __centroid;
             int __dimension;
             bool isValid;
         public:
             Centroid(int d) :
                     __dimension(d),
-                    __centroid(new Point(d)) { }
-
-            ~Centroid() { delete __centroid; }
+                    __centroid(d) { }
 
             const Point get() const {
-                return *__centroid;
+                return __centroid;
             }
 
             void set(const Point &point) {
-                *__centroid = point;
+                __centroid = point;
             }
 
             const bool getValid() const {
@@ -49,59 +42,51 @@ namespace Clustering {
 
 
     public:
-        Cluster();
-        Cluster(int d) : m_PointDimension(d), __centroid(m_PointDimension), m_size(0),
-                         points(nullptr) { } // default ctor
+        Cluster() : m_PointDimension(0), __centroid(0), m_size(0) {
+            generateID();
+             }
+        Cluster(unsigned int d) : m_PointDimension(d), __centroid(m_PointDimension), m_size(0)
+                          { generateID(); }
 
-        Cluster(const Cluster &rhs); // copy ctor
-        Cluster &operator=(const Cluster &); // assignment operator
+        Cluster(const Cluster &rhs);                    // copy ctor
+        Cluster &operator=(const Cluster &);            // assignment operator
         ~Cluster(); // dtor
 
-        Point get__centroid() const;
+        bool isCentroidValid() const;
+        void setCentroidValid(bool b);
+        void setCentroid(const Point &);
+        void computeCentroid();
+        unsigned int numberImported();
+        unsigned int numberFailed();
 
-        LNodePtr getPoints() const;
+        unsigned int CantorFunction(unsigned int id1, unsigned int id2){
+        }
+
+        int getM_size() const { return m_size; }
+        Point get__centroid() const;
+        std::forward_list<Point> getPoints() const;
 
         const unsigned int getID() const {
             return idGenerator;
         }
 
-        int getPointDimension() const {
-            return Cluster::m_PointDimension;
-        }
+        int getPointDimension() const { return m_PointDimension; }
 
-        void setPointDimension(int dim) {
-            m_PointDimension = dim;
-        }
+        void setPointDimension(unsigned int dim) { m_PointDimension = dim; }
 
-        bool isCentroidValid() const;
-
-        void setCentroidValid(bool b);
-
-        void setCentroid(const Point &);
-
-        void computeCentroid();
-
-        int getM_size() const {
-            return m_size;
-        }
-
-        void generateID(){ __id = idGenerator++; }
-
-        void pickPoints(int k, PointPtr *pointArray);
-
+        void generateID() { __id = idGenerator++; }
+        void pickPoints(int k, std::vector<Point> &);
         double intraClusterDistance() const;
 
         friend double interClusterDistance(const Cluster &c1, const Cluster &c2);
-
         int getClusterEdges() const;
-
         friend double interClusterEdges(const Cluster &c1, const Cluster &c2);
 
-        void add(const PointPtr &);                 // add a point
-        const PointPtr &remove(const PointPtr &); // remove a point and return it
+        void add(const Point &);                 // add a point
+        const Point &remove(const Point &);   // remove a point and return it
         // so we can add it to another cluster
 
-
+        bool contains(const Point &);
 
         Cluster &operator+=(const Cluster &rhs); // union
         Cluster &operator-=(const Cluster &rhs); // (asymmetric) difference
@@ -111,41 +96,54 @@ namespace Clustering {
         friend bool operator==(const Cluster &lhs, const Cluster &rhs);
 
         friend const Cluster operator+(const Cluster &lhs, const Cluster &rhs);
-
         friend const Cluster operator-(const Cluster &lhs, const Cluster &rhs);
-
-        friend const Cluster operator+(const Cluster &lhs, const PointPtr &rhs);
-
-        friend const Cluster operator-(const Cluster &lhs, const PointPtr &rhs);
-
+        friend const Cluster operator+(const Cluster &lhs, const Point &rhs);
+        friend const Cluster operator-(const Cluster &lhs, const Point &rhs);
         friend std::ostream &operator<<(std::ostream &os, const Clustering::Cluster &c1);
-
         friend std::istream &operator>>(std::istream &os, Clustering::Cluster &c1);
 
 
+        Point &operator[](const unsigned int &index) {
+            if (index >= m_size)
+                throw OutOfBoundEx("Cluster[]", index);
+
+            auto it = points.begin();
+            unsigned  int i = index;
+            while( i > 0){
+                i--;
+                it++;
+            }
+            return *it;
+        }
+
+
+
     private:
-        bool isValid;                       // validate centroid
         int m_size;
-        LNodePtr points;                    // node pointer to points to the points of the linked list
-        static unsigned int idGenerator;
+        std::forward_list<Point> points;                    // node pointer to points to the points of the linked list
         unsigned int __id;
+        static std::unordered_map<unsigned int, double> m_map;
+        static unsigned int idGenerator;
+        static unsigned int numbImported, numbFailed;
 
     public:
         static const char POINT_CLUSTER_ID_DELIM = ':';
 
         class Move {
-            private:
-                Cluster *_from, *_to;
-                PointPtr _ptr;
-            public:
-                Move(PointPtr &ptr, Cluster *from, Cluster *to) : _ptr(ptr), _from(from), _to(to) { }
 
-                void perform() {
-                    _to->add(_from->remove(_ptr));
-                    _to->setCentroidValid(false);
-                    _from->setCentroidValid(false);
-                }
-            };
+        private:
+            Cluster *_from, *_to;
+            Point _pt;
+        public:
+            Move(Point &p, Cluster &from, Cluster &to) : _pt(p), _from(&from), _to(&to) { }
+
+            void  perform() {
+                _from->remove(_pt);
+                _to->add(_pt);
+                _to->setCentroidValid(false);
+                _from->setCentroidValid(false);
+            }
+        };
     };
 }
 #endif //PA2_CLUSTER_H
