@@ -10,16 +10,13 @@
 #define UCD_CSCI2312_PA2_EXCEPTIONS_H
 
 namespace Clustering {
+
     class Exceptions {
 
     public:
         DimensionalityMismatchEx dimEx;
         OutOfBoundEx outBound;
-        RemoveFromEmptyEx rmEmptyEx;
-
-    private:
-
-
+//        RemoveFromEmptyEx rmEmptyEx;
     };
 
 }

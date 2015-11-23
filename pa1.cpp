@@ -1,20 +1,21 @@
 #include <iostream>
-#include "Point.h"
-#include "Cluster.h"
-#include "KMeans.h"
 #include <fstream>
-//#include "DimensionalityMismatchEx.h"
-//#include "OutOfBoundEx.h"
-//#include "RemoveFromEmptyEx.h"
-#include "Exceptions.h"
 
-using namespace std;
+#include "Point.h"
+//#include "Cluster.h"
+//#include "KMeans.h"
+#include "Exceptions.h"
+#include "KMeans.h"
+
+using std::cout;
+using std::endl;
+
 
 using namespace Clustering;
 
 void randP(int num, int dim) {
     double ran = rand() % 10;
-    fstream out("t.csv", std::ios::out);
+    std::fstream out("t.csv", std::ios::out);
     for (int i = 0; i < num; ++i) {
         out << ran;
         for (int j = 1; j < dim; ++j) {
@@ -27,30 +28,34 @@ void randP(int num, int dim) {
     }
 }
 
-void load(Cluster &cc) {
-    fstream fs("test.csv", ios::in);
-    if (fs.is_open()) {
-        fs >> cc;
-    }
-//    cout << cc;
-}
+//void load(Cluster &cc) {
+//    fstream fs("test.csv", ios::in);
+//    if (fs.is_open()) {
+//        fs >> cc;
+//    }
+//}
 
-void print(Cluster &c) {
-    cout << "size: " << c.getM_size() << "\n";
-    cout << c;
-}
+//void print(Cluster &c) {
+//    cout << "size: " << c.getM_size() << "\n";
+//    cout << c;
+//}
 
 void s() {
-    const int k = 2;
-    KMeans m(k, 2);
+    KMeans<2,2> m;
     m.loadPoints("tt.csv");
     m.start();
-    m.writeToFile("output.csv");
+//    m.writeToFile("output.csv");
 }
 
 int main(void) {
 
-    s();
+//    s();
+
+    KMeans<2,2> km;
+    km.loadPoints("tt.csv");
+    km.start();
+    km.writeToFile("output.csv");
+
 
 //    randP(10, 2);
 
@@ -84,22 +89,25 @@ int main(void) {
     double arr4[dim] = {4, 4};
     double arr5[dim] = {5, 5};
 //
-    try {
+//    try {
 
 
-        Point p1(dim, arr1);
-        Point p2(dim, arr2);
-        Point p3(dim, arr3);
-        Point p4(dim, arr4);
-        Point p5(dim, arr5);
+    Point<double, dim> p1(arr1);
+    Point<double, dim> p2(arr2);
+    Point<double, dim> p3(arr3);
+//        Point p4(dim, arr4);
+//        Point p5(dim, arr5);
 
-        Cluster c1;
-        c1.add(p1);
-        c1.add(p2);
-        c1.add(p3);
-        c1.add(p4);
-//        Cluster::Move m(p1,c1,c1);
-//        cout << "Before: \n"<<c1;
+//    Cluster<Point<double, 2>, 2> c1, c2;
+//    c1.add(p1);
+//    c1.add(p2);
+//    c1.add(p3);
+//    c1.setCentroid(p1);
+
+//    cout << "CENT: " << c1.get__centroid() << " valid " << c1.isCentroidValid();
+//    Cluster<Point<double, 2>, 2>::Move m(p1, c1, c2);
+//    m.perform();
+//    cout << "\nBefore: \n" << c2.contains(p2);
 //
 //        m.perform();
 //        cout << "After\n"<<c1;
@@ -143,13 +151,13 @@ int main(void) {
 
 //        c1.computeCentroid();
 
-    } catch (DimensionalityMismatchEx &er) {
-        cerr << "Error: Dimensionality mismatch " << er << endl;
-    } catch (OutOfBoundEx &outBound) {
-        cerr << "Error: Out of Bound exc - n " << outBound << endl;
-    } catch (RemoveFromEmptyEx &r) {
-        cerr << "Error: " << r << endl;
-    }
+//    } catch (DimensionalityMismatchEx &er) {
+//        cerr << "Error: Dimensionality mismatch " << er << endl;
+//    } catch (OutOfBoundEx &outBound) {
+//        cerr << "Error: Out of Bound exc - n " << outBound << endl;
+//    } catch (RemoveFromEmptyEx &r) {
+//        cerr << "Error: " << r << endl;
+//    }
 //    Point pp1(3, arr);
 //
 //

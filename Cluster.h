@@ -9,62 +9,45 @@
 
 namespace Clustering {
 
-
+    template<typename P, int dim>
     class Cluster {
-        class Centroid {                    // private inner/nested/member class
-            Point __centroid;
-            int __dimension;
-            bool isValid;
-        public:
-            Centroid(int d) :
-                    __dimension(d),
-                    __centroid(d) { }
 
-            const Point get() const {
-                return __centroid;
-            }
-
-            void set(const Point &point) {
-                __centroid = point;
-            }
-
-            const bool getValid() const {
-                return isValid;
-            }
-
-            void setValid(bool v) {
-                isValid = v;
-            }
-        };
-
-        int m_PointDimension;               // number of dimensions of the point in the Cluster
-        Centroid __centroid;                  // cluster's centroid
+        int m_PointDimension;
+        Point<double,dim> __centroid;
+        bool valid;
 
 
     public:
-        Cluster() : m_PointDimension(0), __centroid(0), m_size(0) {
-            generateID();
-             }
-        Cluster(unsigned int d) : m_PointDimension(d), __centroid(m_PointDimension), m_size(0)
-                          { generateID(); }
+        class Move;
 
+        Cluster() : m_PointDimension(0), m_size(0) {
+            generateID();
+        }
+
+//        Cluster(unsigned int d) : m_PointDimension(d), __centroid(m_PointDimension), m_size(0) { generateID(); }
         Cluster(const Cluster &rhs);                    // copy ctor
         Cluster &operator=(const Cluster &);            // assignment operator
         ~Cluster(); // dtor
 
         bool isCentroidValid() const;
+
         void setCentroidValid(bool b);
-        void setCentroid(const Point &);
+
+        void setCentroid(const P &);
+
         void computeCentroid();
+
         unsigned int numberImported();
+
         unsigned int numberFailed();
 
-        unsigned int CantorFunction(unsigned int id1, unsigned int id2){
-        }
+        unsigned int CantorFunction(unsigned int id1, unsigned int id2);
 
         int getM_size() const { return m_size; }
-        Point get__centroid() const;
-        std::forward_list<Point> getPoints() const;
+
+        P get__centroid() const;
+
+        std::forward_list<P> getPoints() const;
 
         const unsigned int getID() const {
             return idGenerator;
@@ -72,44 +55,63 @@ namespace Clustering {
 
         int getPointDimension() const { return m_PointDimension; }
 
-        void setPointDimension(unsigned int dim) { m_PointDimension = dim; }
+        void setPointDimension(unsigned int i_dim) { m_PointDimension = i_dim; }
 
         void generateID() { __id = idGenerator++; }
-        void pickPoints(int k, std::vector<Point> &);
+
+        void pickPoints(int k, std::vector<P> &);
+
         double intraClusterDistance() const;
 
-        friend double interClusterDistance(const Cluster &c1, const Cluster &c2);
+        template<typename C, int d>
+        friend double interClusterDistance(const Cluster<C, d> &c1, const Cluster<C, d> &c2);
+
         int getClusterEdges() const;
-        friend double interClusterEdges(const Cluster &c1, const Cluster &c2);
 
-        void add(const Point &);                 // add a point
-        const Point &remove(const Point &);   // remove a point and return it
-        // so we can add it to another cluster
+        template<typename C, int d>
+        friend double interClusterEdges(const Cluster<C, d> &c1, const Cluster<C, d> &c2);
 
-        bool contains(const Point &);
+        void add(const P &);                 // add a point
+        const P &remove(const P &);         // remove a point and return it
+                                            // so we can add it to another cluster
 
-        Cluster &operator+=(const Cluster &rhs); // union
+        bool contains(const P &);
+
+        Cluster<P, dim> &operator+=(const Cluster<P, dim> &rhs); // union
         Cluster &operator-=(const Cluster &rhs); // (asymmetric) difference
 
-        Cluster &operator+=(const Point &rhs); // add point
-        Cluster &operator-=(const Point &rhs); // remove point
-        friend bool operator==(const Cluster &lhs, const Cluster &rhs);
+        Cluster<P, dim> &operator+=(const P &rhs); // add point
+        Cluster<P, dim> &operator-=(const P &rhs); // remove point
 
-        friend const Cluster operator+(const Cluster &lhs, const Cluster &rhs);
-        friend const Cluster operator-(const Cluster &lhs, const Cluster &rhs);
-        friend const Cluster operator+(const Cluster &lhs, const Point &rhs);
-        friend const Cluster operator-(const Cluster &lhs, const Point &rhs);
-        friend std::ostream &operator<<(std::ostream &os, const Clustering::Cluster &c1);
-        friend std::istream &operator>>(std::istream &os, Clustering::Cluster &c1);
+        template<typename C, int d>
+        friend bool operator==(const Cluster<C, d> &lhs, const Cluster<C, d> &rhs);
+
+        template<typename C, int d>
+        friend const Cluster operator+(const Cluster<C, d> &lhs, const Cluster<C, d> &rhs);
+
+        template<typename C, int d>
+        friend const Cluster<C, d> operator-(const Cluster<C, d> &lhs, const Cluster<C, d> &rhs);
+
+        template<typename C, int d>
+        friend const Cluster<C, d> operator+(const Cluster<C, d> &lhs, const P &rhs);
+
+        template<typename C, int d>
+        friend const Cluster operator-(const Cluster<C, d> &lhs, const P &rhs);
+
+        template<typename C, int d>
+        friend std::ostream &operator<<(std::ostream &os, const Cluster<C, d> &c1);
+
+        template<typename C, int d>
+        friend std::istream &operator>>(std::istream &os, Cluster<C, d> &c1);
 
 
-        Point &operator[](const unsigned int &index) {
+        P &operator[](const unsigned int &index) {
             if (index >= m_size)
                 throw OutOfBoundEx("Cluster[]", index);
 
             auto it = points.begin();
-            unsigned  int i = index;
-            while( i > 0){
+            unsigned int i = index;
+            while (i > 0) {
                 i--;
                 it++;
             }
@@ -117,33 +119,37 @@ namespace Clustering {
         }
 
 
-
     private:
         int m_size;
-        std::forward_list<Point> points;                    // node pointer to points to the points of the linked list
+        std::forward_list<P> points;                    // node pointer to points to the points of the linked list
         unsigned int __id;
         static std::unordered_map<unsigned int, double> m_map;
         static unsigned int idGenerator;
         static unsigned int numbImported, numbFailed;
 
     public:
-        static const char POINT_CLUSTER_ID_DELIM = ':';
-
         class Move {
-
-        private:
-            Cluster *_from, *_to;
-            Point _pt;
         public:
-            Move(Point &p, Cluster &from, Cluster &to) : _pt(p), _from(&from), _to(&to) { }
+            friend class Cluster;
 
-            void  perform() {
+            Move(P &point, Cluster &from, Cluster &to) : _pt(point), _from(&from), _to(&to) { }
+
+            void perform() {
                 _from->remove(_pt);
                 _to->add(_pt);
                 _to->setCentroidValid(false);
                 _from->setCentroidValid(false);
             }
+
+        private:
+            Cluster *_from, *_to;
+            P _pt;
         };
+
+        static const char POINT_CLUSTER_ID_DELIM = ':';
     };
 }
+
+#include "Cluster.cpp"
+
 #endif //PA2_CLUSTER_H

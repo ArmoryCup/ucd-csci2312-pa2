@@ -9,14 +9,17 @@
 #include "Cluster.h"
 
 namespace Clustering {
+
+    template <int k, int dim>
     class KMeans {
-        Cluster m_cluster;
-        std::vector<Cluster> point_space;
+        Cluster<Point<double, dim>, dim> m_cluster;
+        std::vector<Cluster<Point<double, dim>, dim>> point_space;
         unsigned int __k;
         unsigned int m_kPointDim;
 
     public:
         const double SCORE_DIFF_THRESHOLD = 5;
+        KMeans();
         KMeans(unsigned int, unsigned int);
 
         void start();
@@ -24,7 +27,6 @@ namespace Clustering {
         void movePonts();
         void displayResult();
         double computeClusteringScore();
-        void deleteClusters(std::vector<Cluster>);
 
         void writeToFile(std::string fileName);
 
@@ -32,4 +34,5 @@ namespace Clustering {
     };
 }
 
+#include "KMeans.cpp"
 #endif //UCD_CSCI2312_PA2_KMEANS_H

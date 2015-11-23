@@ -12,15 +12,12 @@ namespace Clustering {
 
     public:
         RemoveFromEmptyEx(std::string s) : m_name(s) { }
-//        RemoveFromEmptyEx(LNodePtr n) : m_emptyNode(n) { }
-//        RemoveFromEmptyEx(std::string s, LNodePtr n) : m_name(s), m_emptyNode(n) { }
 
-
-        friend std::ostream &operator<<(std::ostream &, const RemoveFromEmptyEx &err);
-
+//        friend std::ostream &operator<<(std::ostream &, const RemoveFromEmptyEx &err);
 
         const std::string &getName() const { return m_name; }
-//        const LNode *getEmptyNode() const { return m_emptyNode; }
+
+        friend std::ostream &operator<<(std::ostream &, const RemoveFromEmptyEx &err);
     };
 
 }

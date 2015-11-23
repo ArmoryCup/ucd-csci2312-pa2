@@ -7,11 +7,51 @@
 #ifndef CLUSTERING_POINT_H
 #define CLUSTERING_POINT_H
 namespace Clustering {
+    template<typename T, int dims>
+    class Point;
+
+    template<typename T, int d>
+     Point<T, d> &operator+=(Point<T, d> &, const Point<T, d> &);
+
+    template<typename T, int d>
+    Point<T, d> &operator-=(Point<T, d> &, const Point<T, d> &);
 
 
+    template<typename T, int d>
+    const Point<T, d> operator+(const Point<T, d> &, const Point<T, d> &);
+
+    template<typename S, int d>
+    const Point<S, d> operator-(const Point<S, d> &, const Point<S, d> &);
+
+    template<typename S, int d>
+    bool operator==(const Point<S, d> &, const Point<S, d> &);
+
+    template<typename S, int d>
+    bool operator!=(const Point<S, d> &, const Point<S, d> &);
+
+    template<typename S, int d>
+    bool operator<(const Point<S, d> &, const Point<S, d> &);
+
+    template<typename S, int d>
+    bool operator>(const Point<S, d> &, const Point<S, d> &);
+
+    template<typename S, int d>
+    bool operator<=(const Point<S, d> &, const Point<S, d> &);
+
+    template<typename S, int d>
+    bool operator>=(const Point<S, d> &, const Point<S, d> &);
+
+    template<typename S, int d>
+    std::ostream &operator<<(std::ostream &, const Point<S, d> &);
+
+    template<typename S, int d>
+    std::istream &operator>>(std::istream &, Point<S, d> &);
+
+
+    template<typename T, int dims>
     class Point {
         int dim;        // number of dimensions of the point
-        std::vector<double> m_values;
+        std::vector<T> m_values;
 
         unsigned int __id;
         static unsigned int idGenerator;
@@ -20,9 +60,10 @@ namespace Clustering {
     public:
         static const char POINT_VALUE_DELIM = ',';
 
-        Point(unsigned int d);
+        Point();
+//        Point(unsigned int);
+        Point(T *arr);
 
-        Point(unsigned int, double *);
 
         // Big three: cpy ctor, overloaded operator=, dtor
         Point(const Point &);
@@ -32,59 +73,53 @@ namespace Clustering {
         ~Point();
 
         void generatePoint_ID() { __id = idGenerator++; }
+
         static void rewindIdGen() { idGenerator--; }
 
         // Accessors & mutators
         int getDims() const { return dim; }
+        T getValue(unsigned int index) const { return m_values[index]; }
 
-        void setValue(int i, double d) {
-            m_values[i] = d;
-        }
-
-        double getValue(unsigned int) const;
+        void setValue(int i, T d) { m_values[i] = d; }
 
         // Functions
-        double distanceTo(const Point &) const;
+        T distanceTo(const Point &) const;
 
         // Overloaded operators
-        Point &operator*=(double);
+        Point &operator*=(T);
+        Point &operator/=(T);
 
-        Point &operator/=(double);
+        const Point operator*(T); // prevent (p1*2) = p2;
+        const Point operator/(T);
 
-        const Point operator*(double); // prevent (p1*2) = p2;
-        const Point operator/(double);
 
-        // Note: 1-based index!
+        // Friends. <> this is how templates should be declared
+        friend const Point operator+<>(const Point<T, dims> &, const Point<T, dims> &);
+        friend const Point operator-<>(const Point<T, dims> &, const Point<T, dims> &);
+
+        friend Point &operator+= <>(Point<T, dims> &, const Point<T, dims> &);
+        friend Point &operator-= <>(Point<T, dims> &, const Point<T, dims> &);
+
+
+        friend bool operator==<>(const Point<T, dims> &, const Point<T, dims> &);
+        friend bool operator!=<>(const Point<T, dims> &, const Point<T, dims> &);
+        friend bool operator< <>(const Point<T, dims> &, const Point<T, dims> &);
+        friend bool operator> <>(const Point<T, dims> &, const Point<T, dims> &);
+        friend bool operator<= <>(const Point<T, dims> &, const Point<T, dims> &);
+        friend bool operator>= <>(const Point<T, dims> &, const Point<T, dims> &);
+
+        friend std::ostream &operator<< <>(std::ostream &, const Point<T, dims> &);
+        friend std::istream &operator>> <>(std::istream &, Point<T, dims> &);
+
+
         double &operator[](const unsigned int index) {
             if (index >= dim)
                 throw OutOfBoundEx("Point[]", index);
             return m_values[index];
         }
-
-        // Friends
-        friend Point &operator+=(Point &, const Point &);
-
-        friend Point &operator-=(Point &, const Point &);
-
-        friend const Point operator+(const Point &, const Point &);
-
-        friend const Point operator-(const Point &, const Point &);
-
-        friend bool operator==(const Point &, const Point &);
-
-        friend bool operator!=(const Point &, const Point &);
-
-        friend bool operator<(const Point &, const Point &);
-
-        friend bool operator>(const Point &, const Point &);
-
-        friend bool operator<=(const Point &, const Point &);
-
-        friend bool operator>=(const Point &, const Point &);
-
-        friend std::ostream &operator<<(std::ostream &, const Point &);
-
-        friend std::istream &operator>>(std::istream &, Point &);
     };
 }
+
+#include "Point.cpp"
+
 #endif // CLUSTERING_POINT_H
