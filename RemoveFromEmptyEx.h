@@ -8,15 +8,13 @@
 namespace Clustering {
     class RemoveFromEmptyEx {
         std::string m_name;
-//        LNodePtr m_emptyNode;
+        int dim;
 
     public:
         RemoveFromEmptyEx(std::string s) : m_name(s) { }
 
-//        friend std::ostream &operator<<(std::ostream &, const RemoveFromEmptyEx &err);
 
         const std::string &getName() const { return m_name; }
-
         friend std::ostream &operator<<(std::ostream &, const RemoveFromEmptyEx &err);
     };
 

@@ -11,7 +11,7 @@
 namespace Clustering {
 
     template<typename T, int dims>
-    unsigned int Point<T, dims>::idGenerator = 1;
+    unsigned int Point<T, dims>::idGenerator = 0;
 
     template<typename T, int dims>
     Point<T, dims>::Point() {
@@ -48,12 +48,13 @@ namespace Clustering {
 
         for (auto it = copy.m_values.begin(); it != copy.m_values.end(); it++)
             m_values.push_back(*it);
+
     }
 
 // Destructor
     template<typename T, int dims>
     Point<T, dims>::~Point() {
-        idGenerator--;
+//        idGenerator--;
         m_values.clear();
     }
 
@@ -268,10 +269,11 @@ namespace Clustering {
 
     template<typename D, int dims>
     std::ostream &operator<<(std::ostream &os, const Point<D, dims> &point) {
+//        std::cout << "\nPointID: " << point.__id << std::endl;
         os << std::fixed << std::setprecision(1);
         os << point.m_values[0];
         for (unsigned int j = 1; j < point.getDims(); ++j) {
-            os << Point<D, dims>::POINT_VALUE_DELIM << " " << point.m_values[j];
+            os  << " " <<  Point<D, dims>::POINT_VALUE_DELIM << " " << point.m_values[j];
         }
         os << "";
     }
@@ -280,12 +282,19 @@ namespace Clustering {
     std::istream &operator>>(std::istream &istream, Point<T, dims> &point) {
         std::string line;
         int i = 0;
+        int index = 0;
         while (getline(istream, line, ',')) {
-            double d;
-            d = std::stod(line);
-//            point.setValue(i, d);
-            point[i] = d;
             i++;
+            if (i > dims) {
+                    point.setDim(i);
+                    break;
+                }
+
+                double d = 0;
+                index = (i-1);
+                d = std::stod(line);
+                point.setValue(index, d);
+
         }
         return istream;
     }

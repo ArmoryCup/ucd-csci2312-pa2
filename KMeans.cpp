@@ -74,13 +74,14 @@ namespace Clustering {
                 int pID = 0;
 //                cout << "\n******************CLUSTER SWITCH******************\n";
 
+                // run from the end side
                 int i = (numb - 1);
                 // loop through all  k cluster's points
                 while (i >= 0) {
 
 //                    Point<double,dim> currP = point_space[l][i];
 
-                    pID = i;
+//                    pID = i;
 //                    cout << "\nc[" << l << "].currP[" << i << "] --> " << currP << endl;
 
                     // find the nearest cluster to the point
@@ -89,7 +90,7 @@ namespace Clustering {
 //                        distance = currP.distanceTo(point_space[j].get__centroid());
                         distance = point_space[l][i].distanceTo(point_space[j].get__centroid());
 
-//                        cout << "currP --> " << currP << "   dist(c[" << j << "]: " << distance << endl;
+//                        cout << "currP --> " << point_space[l][i] << "   dist(c[" << j << "]: " << distance << endl;
                         if (min > distance) {
                             min = distance;
                             clusterId = j;

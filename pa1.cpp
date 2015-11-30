@@ -41,7 +41,7 @@ void randP(int num, int dim) {
 //}
 
 void s() {
-    KMeans<2,2> m;
+    KMeans<2, 2> m;
     m.loadPoints("tt.csv");
     m.start();
 //    m.writeToFile("output.csv");
@@ -49,12 +49,9 @@ void s() {
 
 int main(void) {
 
-//    s();
+    s();
 
-    KMeans<2,2> km;
-    km.loadPoints("tt.csv");
-    km.start();
-    km.writeToFile("output.csv");
+
 
 
 //    randP(10, 2);
@@ -71,10 +68,26 @@ int main(void) {
 //    cout << point_space[0];
 
 
+    /*int i, j, res;
+    int loop =0;
+    do {
+        try {
+            cout << "first #\n";
+            cin >> i;
+            cout << "second\n";
+            cin >> j;
+            if (j == 0)
+                throw (99);
 
+            res = i / j;
+            cout << "Result: " << res << endl;
+            loop++;
+        } catch (int t) {
+            cout << "Error, you can not divide by zero.\n";
+        }
+    } while (loop != 4);
 
-
-
+*/
 
 
 
@@ -82,19 +95,19 @@ int main(void) {
 //    cout << "Size: " << cluster.getM_size()<<endl;
 //    cluster.computeCentroid();
 
-    const int dim = 2;
-    double arr1[dim] = {1, 1};
-    double arr2[dim] = {2, 2};
-    double arr3[dim] = {3, 3};
-    double arr4[dim] = {4, 4};
-    double arr5[dim] = {5, 5};
+//    const int dim = 2;
+//    double arr1[dim] = {1, 1};
+//    double arr2[dim] = {2, 2};
+//    double arr3[dim] = {3, 3};
+//    double arr4[dim] = {4, 4};
+//    double arr5[dim] = {5, 5};
 //
 //    try {
 
 
-    Point<double, dim> p1(arr1);
-    Point<double, dim> p2(arr2);
-    Point<double, dim> p3(arr3);
+//    Point<double, dim> p1(arr1);
+//    Point<double, dim> p2(arr2);
+//    Point<double, dim> p3(arr3);
 //        Point p4(dim, arr4);
 //        Point p5(dim, arr5);
 

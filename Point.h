@@ -81,6 +81,11 @@ namespace Clustering {
         T getValue(unsigned int index) const { return m_values[index]; }
 
         void setValue(int i, T d) { m_values[i] = d; }
+        void setDim(int i) { dim = i; }
+
+        unsigned int getID() {
+            return __id;
+        }
 
         // Functions
         T distanceTo(const Point &) const;

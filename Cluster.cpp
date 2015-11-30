@@ -15,8 +15,6 @@ namespace Clustering {
     unsigned int Cluster<C, d>::numbFailed = 0;
 
 
-
-
     template<typename P, int dim>
     Cluster<P, dim>::Cluster(const Cluster<P, dim> &rhs) : __centroid(rhs.__centroid) {
         m_size = rhs.m_size;
@@ -147,7 +145,7 @@ namespace Clustering {
     }
 
     template<typename P, int dim>
-    Cluster<P,dim> &Cluster<P,dim>::operator+=(const P &rhs) {
+    Cluster<P, dim> &Cluster<P, dim>::operator+=(const P &rhs) {
         P newPoint = rhs;
         add(newPoint);
         return *this;
@@ -252,14 +250,14 @@ namespace Clustering {
         return newCluster;
     }
 
-    template<typename W, int dim>
-    std::ostream &operator<<(std::ostream &os, const Cluster<W, dim> &c1) {
+    template<typename P, int dim>
+    std::ostream &operator<<(std::ostream &os, const Cluster<P, dim> &c1) {
 //        if (c1.points.empty())
 //            throw RemoveFromEmptyEx("cout<<");
 
         int i = 0;
         for (auto it = c1.points.begin(); it != c1.points.end(); it++) {
-            os << *it << " " << Cluster<W, dim>::POINT_CLUSTER_ID_DELIM << " " << c1.__id << "\n";
+            os << *it<< " " << Cluster<P, dim>::POINT_CLUSTER_ID_DELIM << " " << c1.__id << "\n";
             i++;
         }
 
@@ -278,32 +276,22 @@ namespace Clustering {
     template<typename W, int dim>
     std::istream &operator>>(std::istream &istream, Cluster<W, dim> &c1) {
         std::string line;
-        int iDim = c1.getPointDimension();
-        int dimension;  // to hold a number of dimensions for a point
-        char delim = W::POINT_VALUE_DELIM;      // Point delimeter
         while (getline(istream, line)) {
-            dimension = 1;
 
-            // get point's dimenstion by counting the delimeter in the line
-            for (int i = 0; i < line.size(); ++i) {
-                if (line[i] == delim) {
-                    dimension++;
-                }
-            }
-
-            Point<double,dim> newPoint;
-
+            Point<double, dim> newPoint;
             try {
                 std::stringstream lineStream(line);
 
                 lineStream >> newPoint;
+                if (newPoint.getDims() > dim)
+                    throw DimensionalityMismatchEx("Cluster>>");
+
                 c1.add(newPoint);
                 Cluster<W, dim>::numbImported++;
 
             } catch (DimensionalityMismatchEx &dimErr) {
-                std::cout << "Error: Dimensionality mismatch " << dimErr << std::endl;
+//                std::cout << "Error: Dimensionality mismatch " << dimErr << std::endl;
                 Cluster<W, dim>::numbFailed++;
-                W::rewindIdGen();
             }
         }
         return istream;
@@ -330,13 +318,13 @@ namespace Clustering {
 
     template<typename P, int dim>
     unsigned int Cluster<P, dim>::numberImported() {
-        numbImported++;
+//        numbImported++;
         return numbImported;
     }
 
     template<typename P, int dim>
     unsigned int Cluster<P, dim>::numberFailed() {
-        numbFailed++;
+//        numbFailed++;
         return numbFailed;
     }
 
@@ -344,10 +332,11 @@ namespace Clustering {
     std::forward_list<P> Cluster<P, dim>::getPoints() const {
         return points;
     }
+
     template<typename P, int dim>
     P Cluster<P, dim>::get__centroid() const {
 //        return __centroid.get();
-        return  __centroid;
+        return __centroid;
     }
 
     template<typename W, int dim>

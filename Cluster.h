@@ -10,6 +10,14 @@
 namespace Clustering {
 
     template<typename P, int dim>
+    class Cluster;
+
+
+    template<typename P, int dim>
+    std::ostream &operator<<(std::ostream &os, const Cluster<P, dim> &c1);
+
+
+    template<typename P, int dim>
     class Cluster {
 
         int m_PointDimension;
@@ -98,8 +106,7 @@ namespace Clustering {
         template<typename C, int d>
         friend const Cluster operator-(const Cluster<C, d> &lhs, const P &rhs);
 
-        template<typename C, int d>
-        friend std::ostream &operator<<(std::ostream &os, const Cluster<C, d> &c1);
+        friend std::ostream &operator<< <>(std::ostream &os, const Cluster &);
 
         template<typename C, int d>
         friend std::istream &operator>>(std::istream &os, Cluster<C, d> &c1);
