@@ -32,8 +32,10 @@ namespace Clustering {
             csv >> m_cluster;
         }
         csv.close();
+        m_cluster.loadToMap(m_cluster);
         int numRead = m_cluster.numberImported(),
                 numFailed = m_cluster.numberFailed();
+
 
         std::cout << numRead << " points were read successfull\n";
         std::cout << numFailed << " points were not read due to dimensionality mismatches\n";
@@ -87,8 +89,8 @@ namespace Clustering {
                     // find the nearest cluster to the point
                     min = MIN;
                     for (unsigned int j = 0; j < __k; ++j) {
-//                        distance = currP.distanceTo(point_space[j].get__centroid());
                         distance = point_space[l][i].distanceTo(point_space[j].get__centroid());
+
 
 //                        cout << "currP --> " << point_space[l][i] << "   dist(c[" << j << "]: " << distance << endl;
                         if (min > distance) {
@@ -140,7 +142,7 @@ namespace Clustering {
         int p_In, p_Out;
         p_In = p_Out = 0;
 
-        // calculate the sum of the inter-cluster distances
+        // calculate the sum of the intra-cluster distances
         // and the number of distinct (intra-) cluster edges
         for (unsigned int i = 0; i < __k; ++i) {
             d_In += point_space[i].intraClusterDistance();

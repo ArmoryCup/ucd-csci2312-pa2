@@ -270,6 +270,7 @@ namespace Clustering {
     template<typename D, int dims>
     std::ostream &operator<<(std::ostream &os, const Point<D, dims> &point) {
 //        std::cout << "\nPointID: " << point.__id << std::endl;
+        std::cout << point.__id << " : ";
         os << std::fixed << std::setprecision(1);
         os << point.m_values[0];
         for (unsigned int j = 1; j < point.getDims(); ++j) {
@@ -280,7 +281,7 @@ namespace Clustering {
 
     template<typename T, int dims>
     std::istream &operator>>(std::istream &istream, Point<T, dims> &point) {
-        std::string line;
+        std::string line = "";
         int i = 0;
         int index = 0;
         while (getline(istream, line, ',')) {

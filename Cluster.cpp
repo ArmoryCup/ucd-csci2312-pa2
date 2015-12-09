@@ -4,6 +4,8 @@
 #include "Cluster.h"
 #include "Exceptions.h"
 
+using namespace std;
+
 namespace Clustering {
 
     template<typename C, int d>
@@ -13,6 +15,9 @@ namespace Clustering {
 
     template<typename C, int d>
     unsigned int Cluster<C, d>::numbFailed = 0;
+
+    template<typename C, int d>
+    typename Cluster<C, d>::myMap Cluster<C, d>::m_distances;
 
 
     template<typename P, int dim>
@@ -74,9 +79,9 @@ namespace Clustering {
 
     template<typename P, int dim>
     const P &Cluster<P, dim>::remove(const P &point) {
-//        if (points.empty()) {
-//            throw RemoveFromEmptyEx("Remove function");
-//        }
+        if (points.empty()) {
+            throw RemoveFromEmptyEx("Remove function");
+        }
         bool found = false;
         for (auto i = points.begin(); i != points.end(); i++) {
             if (*i == point) {
@@ -257,7 +262,7 @@ namespace Clustering {
 
         int i = 0;
         for (auto it = c1.points.begin(); it != c1.points.end(); it++) {
-            os << *it<< " " << Cluster<P, dim>::POINT_CLUSTER_ID_DELIM << " " << c1.__id << "\n";
+            os << *it << " " << Cluster<P, dim>::POINT_CLUSTER_ID_DELIM << " " << c1.__id << "\n";
             i++;
         }
 
@@ -271,6 +276,29 @@ namespace Clustering {
                 return true;
         }
         return false;
+    }
+
+    template<typename P, int dim>
+    void Cluster<P, dim>::loadToMap(Cluster<P, dim> &c) {
+        // Let's see them
+//    cout << endl <<  "Print out vector" << endl;
+        for (auto it = points.begin(); it != points.end(); ++it)
+//            cout << *it << endl;
+
+
+            for (auto ito = points.begin(); ito != points.end(); ++ito) {
+                auto iti = ito;
+                ++iti; // Start the inner iterator at the next value to avoid repeating points
+
+                for (; iti != points.end(); ++iti) {
+//                cout << *ito << ", " << *iti << endl; // Uncomment to see the points...
+//            cout << "DISTANCE: " << ito->distanceTo(*iti) << endl; // ...and the distance
+                    Keys key(*ito, *iti);
+                    auto search = m_distances.find(key); // check if it is there already (won't be :))
+                    if (search == m_distances.end())
+                        m_distances[key] = ito->distanceTo(*iti);
+                }
+            }
     }
 
     template<typename W, int dim>
@@ -299,8 +327,8 @@ namespace Clustering {
 
     template<typename P, int d>
     void Cluster<P, d>::computeCentroid() {
-//        if (points.empty())
-//            throw RemoveFromEmptyEx("ComputeCentroid");
+        if (points.empty())
+            throw RemoveFromEmptyEx("ComputeCentroid");
 
         int dim = m_PointDimension;
         P ptr;
@@ -368,6 +396,7 @@ namespace Clustering {
 
     template<typename P, int dim>
     double Cluster<P, dim>::intraClusterDistance() const {
+
         double sum = 0;
 
         if (points.empty())
@@ -376,37 +405,42 @@ namespace Clustering {
         auto curr1 = points.begin(), curr2 = points.begin();
         curr2++;
 
+
         while (curr1 != points.end()) {
             while (curr2 != points.end()) {
-                sum += curr1->distanceTo(*curr2);
+                typename Cluster<P,dim>::Keys key(*curr1, *curr2);
+                sum += Cluster<P,dim>::m_distances[key];
                 curr2++;
             }
             curr1++;
 
 
         }
-        return (sum / 2);
+        return sum;
     }
+
 
     template<typename P, int dim>
     double interClusterDistance(const Cluster<P, dim> &c1, const Cluster<P, dim> &c2) {
         double sum = 0;
 
-        auto currC1 = c1.points.begin(), currC1n = c1.points.begin();
-        currC1n++;
-        auto currC2 = c2.points.begin(), currC2n = c2.points.begin();
-        currC2n++;
+        auto currC1 = c1.points.begin();
+        auto currC2 = c2.points.begin();
 
         while (currC1 != c1.points.end()) {
             while (currC2 != c2.points.end()) {
-                sum += currC1->distanceTo(*currC2);
+                typename Cluster<P,dim>::Keys key(*currC1, *currC2);
+                sum += Cluster<P,dim>::m_distances[key];
+//                sum += currC1->distanceTo(*currC2);
                 currC2++;
             }
             currC2 = c2.points.begin();
             currC1++;
         }
-        return (sum / 2);
+//        return (sum / 2);
+        return sum;
     }
+
 
     template<typename P, int dim>
     int Cluster<P, dim>::getClusterEdges() const {
@@ -433,7 +467,24 @@ namespace Clustering {
     }
 
     template<typename P, int dim>
-    unsigned int Cluster<P, dim>::CantorFunction(unsigned int id1, unsigned int id2) {
+    unsigned int Cluster<P, dim>::cantorFunction(unsigned int id1, unsigned int id2) {
         return ((id1 + id2) * (id1 + id2 + 1) + id2) / 2 + id2;
+    }
+    template<typename P, int dim>
+    void Cluster<P,dim>::loadToMap() {
+        for (auto it = points.begin(); it != points.end(); ++it)
+            for (auto ito = points.begin(); ito != points.end(); ++ito) {
+                auto iti = ito;
+                ++iti; // Start the inner iterator at the next value to avoid repeating points
+
+                for (; iti != points.end(); ++iti) {
+                    Cluster<P,dim>::Keys key(*ito, *iti);
+                    auto search = m_distances.find(key); // check if it is there already (won't be :))
+                    if (search == m_distances.end())
+                        m_distances[key] = ito->distanceTo(*iti);
+                }
+            }
+
+
     }
 }

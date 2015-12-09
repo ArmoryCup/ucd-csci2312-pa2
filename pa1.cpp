@@ -47,14 +47,33 @@ void s() {
 //    m.writeToFile("output.csv");
 }
 
+void mytest(){
+        const int dim = 2;
+    double arr1[dim] = {1, 1};
+    double arr2[dim] = {2, 2};
+    double arr3[dim] = {3, 3};
+    double arr4[dim] = {4, 4};
+    double arr5[dim] = {5, 5};
+
+    Point<double, dim> p1(arr1);
+    Point<double, dim> p2(arr2);
+    Point<double, dim> p3(arr3);
+
+    Cluster<Point<double, 2>, 2> c1, c2;
+    c1.add(p1);
+    c1.add(p2);
+    c1.add(p3);
+//    cout <<"Cantour " << c1.cantorFunction(p1.getID(), p2.getID()) << endl;
+//    cout <<"Cantour2 " << c1.cantorFunction(p1.getID(), p3.getID()) << endl;
+}
+
 int main(void) {
 
     s();
 
+//    mytest();
 
 
-
-//    randP(10, 2);
 
 
 //    std::vector<Cluster> point_space;
@@ -95,35 +114,7 @@ int main(void) {
 //    cout << "Size: " << cluster.getM_size()<<endl;
 //    cluster.computeCentroid();
 
-//    const int dim = 2;
-//    double arr1[dim] = {1, 1};
-//    double arr2[dim] = {2, 2};
-//    double arr3[dim] = {3, 3};
-//    double arr4[dim] = {4, 4};
-//    double arr5[dim] = {5, 5};
-//
-//    try {
 
-
-//    Point<double, dim> p1(arr1);
-//    Point<double, dim> p2(arr2);
-//    Point<double, dim> p3(arr3);
-//        Point p4(dim, arr4);
-//        Point p5(dim, arr5);
-
-//    Cluster<Point<double, 2>, 2> c1, c2;
-//    c1.add(p1);
-//    c1.add(p2);
-//    c1.add(p3);
-//    c1.setCentroid(p1);
-
-//    cout << "CENT: " << c1.get__centroid() << " valid " << c1.isCentroidValid();
-//    Cluster<Point<double, 2>, 2>::Move m(p1, c1, c2);
-//    m.perform();
-//    cout << "\nBefore: \n" << c2.contains(p2);
-//
-//        m.perform();
-//        cout << "After\n"<<c1;
 
 //        Cluster c2;
 //        c2.add(p1);

@@ -83,7 +83,7 @@ namespace Clustering {
         void setValue(int i, T d) { m_values[i] = d; }
         void setDim(int i) { dim = i; }
 
-        unsigned int getID() {
+        unsigned int getID() const{
             return __id;
         }
 
