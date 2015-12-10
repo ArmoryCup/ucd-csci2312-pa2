@@ -6,7 +6,11 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 set(SOURCE_FILES
     Cluster.cpp
     Cluster.h
-    pa1.cpp
+        main.cpp
+        ErrorContext.cpp
+        ErrorContext.h
+        ClusteringTests.cpp
+        ClusteringTests.h
     Point.cpp
     Point.h)
 
