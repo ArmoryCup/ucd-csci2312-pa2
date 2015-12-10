@@ -25,12 +25,13 @@ namespace Clustering {
         }
 
         Cluster() : m_size(0), points(nullptr) { } // default ctor
-
         Cluster(const Cluster &); // copy ctor
-
         Cluster &operator=(const Cluster &); // assignment operator
-
         ~Cluster(); // dtor
+
+        int getSize() {
+            return m_size;
+        }
 
         void add(const PointPtr &); // add a point
         const PointPtr &remove(const PointPtr &); // remove a point and return it so we can add it to another cluster
@@ -44,6 +45,8 @@ namespace Clustering {
         friend bool operator==(const Cluster &lhs, const Cluster &rhs);
 
         friend std::ostream &operator<<(std::ostream &os, const Clustering::Cluster &c1);
+        friend std::istream &operator>>(std::istream &os, Clustering::Cluster &c1);
+
         friend const Cluster operator+(const Cluster &lhs, const Cluster &rhs);
         friend const Cluster operator-(const Cluster &lhs, const Cluster &rhs);
 

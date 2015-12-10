@@ -1,15 +1,15 @@
 #include <cmath>
 #include "Point.h"
-#include <cassert>
 #include <iostream>
+#include <iomanip>
 
 namespace Clustering {
 
     Point::Point(const int dims) {
         dim = dims;
 
-        values = new double[dims];
-        for (size_t i = 0; i < dims; i++) {
+        values = new double[dims+1];
+        for (unsigned int i = 0; i < dims; i++) {
             values[i] = 0;
         }
     }
@@ -26,7 +26,7 @@ namespace Clustering {
 
         dim = copy.dim;
         values = new double[dim];
-        for (int i = 0; i < dim; ++i) {
+        for (int i = 0; i <= dim; ++i) {
             values[i] = copy.values[i];
         }
     }
@@ -34,9 +34,10 @@ namespace Clustering {
 // Destructor
 // No dynamic allocation, so nothing to do; if omitted, generated automatically
     Point::~Point() {
-        if (values != nullptr) {
+//        if (values != nullptr && values == NULL) {
+        if (values != NULL) {
+            dim = 0;
             delete[] values;
-            values = NULL;
         }
     }
 
@@ -44,25 +45,18 @@ namespace Clustering {
         return values[i];
     }
 
-// this function return a double that approximates the distance between the two points.
-//    double Point::distanceTo(Point &point)  {
-//
-//        double distance;
-//        double d;
-//        for (int i = 0; i < dim; ++i) {
-//            d += pow((point.getValue(i)- values[i]), 2);
-//        }
-//        distance = sqrt(d);
-//        return distance;
-//    }
-
     std::ostream &operator<<(std::ostream &os, const Point &point) {
 
-        os << "(" << point.values[0];
-        for (int i = 1; i < point.dim; i++) {
+        if(point.values == nullptr)
+            std::cout <<"Points are empty\n";
+
+        os << std::fixed << std::setprecision(1);
+        os  << point.values[0];
+        for (int i = 1; i < point.dim+1; i++) {
             os << ", " << point.values[i];
+//            os << point.values[i] << ", ";
         }
-        os << ")";
+        os.flush();
 
     }
 
@@ -74,7 +68,7 @@ namespace Clustering {
             delete[] values;
             dim = rightSide.dim;
             values = new double[dim];
-            for (int i = 0; i < dim; ++i) {
+            for (int i = 0; i <= dim; ++i) {
                 values[i] = rightSide.values[i];
             }
             return *this;
@@ -82,23 +76,23 @@ namespace Clustering {
     }
 
 
-
-
-
-
     bool operator<(const Point &p1, const Point &p2) {
-
-        for (int i = 0; i < p1.dim; ++i) {
-            if (p1.values[i] < p2.values[i])
-                return true;
+        bool isLess = false;
+        for (int i = 0; i <= p1.dim; ++i) {
+            if (p1.values[i] < p2.values[i] || p1.values[i] == p2.values[i]) {
+                isLess = true;
+            }
             else if (p2.values[i] < p1.values[i])
-                return false;
-//
-//            else return false;
+                isLess = true;
+            else {
+                isLess = false;
+                break;
+            }
         }
-        return false;
+        return isLess;
     }
-    bool operator>(const Point &p1,const Point &p2) {
+
+    bool operator>(const Point &p1, const Point &p2) {
         int iDim = p1.getDims();
         for (int i = 0; i < iDim; ++i) {
             if (p1.getValue(i) > p2.getValue(i))
@@ -110,11 +104,10 @@ namespace Clustering {
     }
 
 
-
-    bool operator>=(const Point &p1,const Point &p2) {
+    bool operator>=(const Point &p1, const Point &p2) {
         int size = p1.getDims();
         for (int i = 0; i < size; ++i) {
-            if (p1.getValue(i)>= p2.getValue(i))
+            if (p1.getValue(i) >= p2.getValue(i))
                 return true;
             else
                 return false;
@@ -124,7 +117,7 @@ namespace Clustering {
     const Point operator+(const Point &operand1, const Point &operand2) {
         Point temp(operand1);
 
-        for (int i = 0; i < temp.dim; ++i) {
+        for (int i = 0; i <= temp.dim; ++i) {
             temp.values[i] = operand1.values[i] + operand2.values[i];
         }
         return temp;
@@ -134,29 +127,26 @@ namespace Clustering {
         Point temp(operand1);
 //        operand1.~Point();
 
-        for (int i = 0; i < temp.dim; ++i) {
+        for (int i = 0; i <= temp.dim; ++i) {
             temp.values[i] = operand1.values[i] - operand2.values[i];
         }
         return temp;
     }
 
 
-
-
     Point &Point::operator*=(const double d) {
-        for (int i = 0; i < dim; ++i) {
+        for (int i = 0; i <= dim; ++i) {
             values[i] *= d;
         }
         return *this;
     }
 
     Point &Point::operator/=(double d) {
-        if(d==0){
+        if (d == 0) {
             std::cout << "Error, attempting to divide by zero.\n";
             return *this;
         }
-        for (int i = 0; i < dim; ++i) {
-            assert(!values[i] == 0);
+        for (int i = 0; i <= dim; ++i) {
             values[i] /= d;
         }
         return *this;
@@ -164,7 +154,7 @@ namespace Clustering {
 
     const Point Point::operator*(double d) const {
         Point temp = *this;
-        for (int i = 0; i < temp.getDims(); ++i) {
+        for (int i = 0; i <= temp.getDims(); ++i) {
 
             temp.values[i] = values[i] * d;
         }
@@ -176,16 +166,22 @@ namespace Clustering {
             std::cout << "Error! You can not divide by zero\n";
             return *this;
         }
-        for (int i = 0; i < dim; ++i) {
-            assert(!values[i] == 0);
-            values[i] / d;
+        Point tempPoint = *this;
+
+        double temp = 0;
+        for (int i = 0; i <= dim; ++i) {
+            temp = tempPoint.values[i] / d;
+            values[i] = temp;
+
         }
+
+
         return *this;
     }
 
     Point &operator+=(Point &point, const Point &point1) {
 
-        for (int i = 0; i < point.dim; ++i) {
+        for (int i = 0; i <= point.dim; ++i) {
             point.values[i] += point1.values[i];
         }
 
@@ -193,51 +189,37 @@ namespace Clustering {
     }
 
     Point &operator-=(Point &point, const Point &point1) {
-        for (int i = 0; i < point.dim; ++i) {
+        for (int i = 0; i <= point.dim; ++i) {
             point.values[i] -= point1.values[i];
         }
         return point;
     }
 
     bool operator==(const Point &point, const Point &point1) {
-        /*
-         *  bool operator==(Point &p1, Point &p2) {
-
-        for (int i = 0; i < p1.dim; ++i) {
-            if (p1.values[i] == p2.values[i])
-                return true;
-            else return false;
-        }
-
-    }
-         * */
-        for (int i = 0; i < point.dim; ++i) {
+        bool equal = false;
+        for (int i = 0; i <= point.dim; ++i) {
             if (point.values[i] == point1.values[i]) {
-                return true;
-            }else{
+                equal = true;
+            } else {
                 return false;
                 break;
             }
         }
 
+        return equal;
+
     }
 
     bool operator!=(const Point &point, const Point &point1) {
-        /*
-         * bool operator!=(Point &p1, Point &p2) {
-        return !(p1 == p2);
-    }
-         * */
-
         return !(point == point1);
     }
 
     double Point::distanceTo(const Point &point) const {
 
-        double distance;
-        double d;
-        for (int i = 0; i < dim; ++i) {
-            d += pow((point.getValue(i)- values[i]), 2);
+        double distance = 0;
+        double d = 0;
+        for (int i = 0; i <= dim; ++i) {
+            d += pow((point.getValue(i) - values[i]), 2);
         }
         distance = sqrt(d);
         return distance;
@@ -256,4 +238,15 @@ namespace Clustering {
     }
 
 
+    std::istream &operator>>(std::istream &istream, Point &point) {
+        std::string line;
+        int i = 0;
+        while (getline(istream, line, ',')) {
+            double d;
+            d = std::stod(line);
+            point.setValue(i, d);
+               i++;
+        }
+        return istream;
+    }
 }

@@ -1,42 +1,66 @@
-#include "Cluster.h"
 #include <iostream>
-#include <cassert>
+#include <fstream>
+#include <sstream>
+
+#include "Point.h"
+#include "Cluster.h"
 
 using namespace std;
 namespace Clustering {
 
     Cluster::Cluster(const Cluster &rhs) {
+
+        if (rhs.m_size == 0) {
+            m_size = 0;
+            points = NULL;
+            return;
+        }
+
         m_size = rhs.m_size;
-        LNodePtr newNode;                // to point to the new node
-        LNodePtr curr = NULL;         // to move thorugh the lsit
+//        LNodePtr curr = NULL;         // to move thorugh the lsit
 
-        LNodePtr copy = rhs.points;
+        LNodePtr rhsNode = rhs.points;
         this->points = NULL;
-        while (copy) {
-            // Allocate a new node and store ptr there.
-            newNode = new LNode;
+        while (rhsNode) {
 
-            newNode->p = copy->p;
+            LNodePtr newNode = new LNode;
+            newNode->p = rhsNode->p;
             newNode->next = NULL;
-            if (!points) {
+            if (!points)
                 points = newNode;
-            } else {
-                curr = points;
-                while (curr->next) {
-                    curr = curr->next;
+            else {
+                LNodePtr lhsCurr = points;
+                while (lhsCurr->next) {
+                    lhsCurr = lhsCurr->next;
                 }
-                curr->next = newNode;
+                lhsCurr->next = newNode;
+
             }
-            copy = copy->next;
+
+            rhsNode = rhsNode->next;
+
+            // Allocate a new node and store ptr there.
+//            LNodePtr newNode = new LNode;
+
+//            newNode->p = rhsNode->p;
+//            newNode->next = NULL;
+//            if (!points) {
+//                points = newNode;
+//            } else {
+//                curr = points;
+//                while (curr->next) {
+//                    curr = curr->next;
+//                }
+//                curr->next = newNode;
+//            }
         }
     }
 
     void Cluster::add(const PointPtr &ptr) {
-        LNodePtr newNode;                // to point to the new node
         LNodePtr curr = NULL;         // to move through the list
 
         // Allocate a new node and store ptr there.
-        newNode = new LNode;
+        LNodePtr newNode = new LNode;
         newNode->p = ptr;
         newNode->next = NULL;
         if (!points) {
@@ -110,45 +134,37 @@ namespace Clustering {
         while (points != NULL) {
             LNodePtr delNode = points;
             points = points->next;
-//            if (delNode->p != NULL)
-//                delete delNode->p;
             delete delNode;
+            delNode = NULL;
         }
-//        cout << "Dereferencing\n";
     }
 
     const PointPtr &Cluster::remove(const PointPtr &ptr) {
 
-        LNodePtr currNode, nextNode, delNode;
-        static PointPtr pDel;
-        currNode = points;
-
-        while (currNode->next != NULL) {
-            if (*currNode->p == *ptr) {
-                delNode = points;
-                pDel = currNode->p;
-                points = currNode->next;
-                currNode = currNode->next;
-            } else {
-                break;
-            }
-//
+        if (m_size == 0) {
+            cout << "Error! Point is not found.\n";
+            return ptr;
+        }
+        if (ptr->getDims() == 0) {
+            return ptr;
         }
 
-        while (currNode->next != NULL) {
-            if (currNode->next->p == ptr) {
-                delNode = currNode->next;
-                currNode->next = currNode->next->next;
-                pDel = delNode->p;
-                delete delNode;
+        LNodePtr curr = points;
+        while (curr != NULL) {
+            if (curr->p == ptr) {
+//                delete curr->p;
+//                curr->p = NULL;
+                curr->p->~Point();
+                curr = curr->next;
+
                 m_size--;
-                return pDel;
-            } else
-                currNode = currNode->next;
+            }
+            else
+                curr = curr->next;
+
         }
-        cout << "Error! Point is not found.\n";
-        pDel = NULL;
-        return pDel;
+
+        return ptr;
     }
 
     const Cluster operator+(const Cluster &lhs, const Cluster &rhs) {
@@ -180,39 +196,56 @@ namespace Clustering {
     }
 
     bool operator==(const Cluster &lhs, const Cluster &rhs) {
-        int size = lhs.points->p->getDims();
-        LNodePtr lCurr = lhs.points;
-        LNodePtr rCurr = rhs.points;
+        bool isEqual = false;
 
-        PointPtr left, right;
-
-        while (lCurr) {
-            left = lCurr->p;
-            right = rCurr->p;
-            for (int i = 0; i < size; ++i) {
-                if (left->getValue(i) == right->getValue(i)) {
-                    return true;
-                }
-                else {
-                    return false;
-                    break;
-                }
-            }
-            lCurr = lCurr->next;
-            rCurr = rCurr->next;
+        if (lhs.m_size == 0 && rhs.m_size == 0) {
+            return true;
         }
+
+
+        else if (lhs.m_size > 0 && rhs.m_size > 0) {
+
+            int size = lhs.points->p->getDims();
+            LNodePtr lCurr = lhs.points;
+            LNodePtr rCurr = rhs.points;
+            PointPtr left, right;
+
+            while (lCurr) {
+                left = lCurr->p;
+                right = rCurr->p;
+                for (int i = 0; i < size; ++i) {
+                    if (left->getValue(i) == right->getValue(i)) {
+                        isEqual = true;
+                    }
+                    else {
+                        isEqual = false;
+                        break;
+                    }
+                }
+                lCurr = lCurr->next;
+                rCurr = rCurr->next;
+            }
+        }
+        return isEqual;
     }
 
 
     std::ostream &operator<<(std::ostream &os, const Cluster &c1) {
+
         LNodePtr n = c1.points;
-        os << *(n->p) << " ";
-        while (n->next) {
+//        os << *(n->p) << "\n";
+//        while (n->next) {
+//            n = n->next;
+//            os << *(n->p) << " ";
+//        }
+//        os << std::endl;
+
+        while (n) {
+            os << *(n->p) << "\n";
             n = n->next;
-            os << *(n->p) << " ";
         }
-        os << std::endl;
     }
+
 
     Cluster &Cluster::operator+=(const Point &rhs) {
 
@@ -222,61 +255,33 @@ namespace Clustering {
     }
 
     Cluster &Cluster::operator-=(const Point &rhs) {
-        LNodePtr currNode, nextNode, delNode;
+        m_size--;
+
+        if (points->next == NULL) {
+            delete points;
+            points = NULL;
+            return *this;
+
+        }
+
+        LNodePtr currNode, delNode;
         int dim = points->p->getDims();
         bool isEqual = false;
         bool flag = false;
         currNode = points;
+
         while (currNode) {
-            for (int i = 0; i < dim; ++i) {
-                if (currNode->p->getValue(i) == rhs.getValue(i))
-                    flag = true;
-                else {
-                    flag = false;
-                    break;
-                }
-            }
-            if (flag) {
-                delNode = points;
-                points = points->next;
-                currNode = points;
-                m_size--;
-                delete delNode->p;
-                delete delNode;
-            }
-            else if (!flag)
-                break;
-            else
+            if (currNode->p == &rhs) {
+                delNode = currNode;
                 currNode = currNode->next;
-
-        }
-
-        currNode = points;
-        isEqual = false;
-        while (currNode->next) {
-            nextNode = currNode;
-
-            for (int i = 0; i < dim; ++i) {
-                if (nextNode->next->p->getValue(i) == rhs.getValue(i))
-                    isEqual = true;
-                else {
-                    isEqual = false;
-                    break;
-                }
-            }
-            if (isEqual) {
-                delNode = nextNode->next;
-                nextNode->next = nextNode->next->next;
-                m_size--;
-                delete delNode->p;
                 delete delNode;
+                delNode = NULL;
             }
-
-            else
-                currNode = currNode->next;
         }
 
         return *this;
+
+
     }
 
 
@@ -311,8 +316,9 @@ namespace Clustering {
 
 
     Cluster &Cluster::operator-=(const Cluster &rhs) {
-        Cluster intersect;
 
+
+        Cluster intersect;
         LNodePtr curr = this->points,
                 rhsCurr = rhs.points;
         while (curr) {
@@ -320,14 +326,20 @@ namespace Clustering {
             while (rhsCurr) {
                 if (curr->p == rhsCurr->p) {
                     intersect.add(rhsCurr->p);
-//                    rhsCurr = rhsCurr->next;
                 }
                 rhsCurr = rhsCurr->next;
             }
             curr = curr->next;
         }
 
-        *this = intersect;
+        if (intersect.m_size == rhs.m_size) {
+            this->m_size = 0;
+            this->~Cluster();
+        }
+
+        else if (intersect.m_size > 0)
+            *this = intersect;
+
         return *this;
     }
 
@@ -407,6 +419,58 @@ namespace Clustering {
     }
 
     const Cluster operator-(const Cluster &lhs, const PointPtr &rhs) {
-        return Cluster();
+        Cluster tempCluster = lhs;
+        LNodePtr curr = tempCluster.points;
+        while (curr) {
+            if (curr->p == rhs) {
+                if (rhs->getDims() != 0){
+                    curr->p->~Point();
+                    tempCluster.m_size--;
+                }
+
+            }
+            curr = curr->next;
+
+        }
+        return tempCluster;
+    }
+
+//    std::istream &operator>>(std::istream &istream, Cluster &c1) {
+//        std::string line;
+//        int dimension;  // to hold a number of dimensions for a point
+//        while (getline(istream, line)) {
+//            dimension = 1;
+//
+//                stringstream lineStream(line);
+//                Point newPoint(dimension);
+//
+//                lineStream >> newPoint;
+//                c1.add(newPoint);
+//        }
+//        return istream;
+//    }
+    std::istream &operator>>(std::istream &istream, Clustering::Cluster &c1) {
+
+
+        std::string line;
+        int dimension;  // to hold a number of dimensions for a point
+        while (getline(istream, line)) {
+            dimension = 1;
+
+            // get point's dimenstion by counting the delimeter in the line
+            for (int i = 0; i < line.size(); ++i) {
+                if (line[i] == ',') {
+                    dimension++;
+                }
+            }
+
+            stringstream lineStream(line);
+            Point *newPoint = new Point(dimension);
+
+            lineStream >> *newPoint;
+            c1.add(newPoint);
+
+        }
+        return istream;
     }
 }

@@ -20,7 +20,9 @@ namespace Clustering {
 
         // Accessors & mutators
         int getDims() const { return dim; }
-        void setValue(int, double);
+        void setValue(int index, double value){
+            values[index] = value;
+        }
         double getValue(int) const;
 
         // Functions
@@ -31,11 +33,12 @@ namespace Clustering {
         // Members
         Point &operator*=(double);
         Point &operator/=(double);
+
         const Point operator*(double) const; // prevent (p1*2) = p2;
         const Point operator/(double) const;
 
         // Note: 1-based index!
-        double &operator[](int index) { return values[index - 1]; } // TODO out-of-bds?
+        double &operator[](int index) { return values[index]; }
 
         // Friends
         friend Point &operator+=(Point &, const Point &);
